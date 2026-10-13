@@ -1,0 +1,5 @@
+{
+  "API_BASE_URL": "https://staging.example.invalid",
+  "SENTRY_DSN": "",
+  "ENV_NAME": "staging"
+}

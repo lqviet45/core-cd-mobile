@@ -1,0 +1,31 @@
+---
+description: Quy ước cho app Flutter Core CD (đọc kèm docs/STACK.md và docs/BACKEND_CONTRACT.md)
+alwaysApply: true
+---
+
+## Cấu trúc
+- Feature-first: `lib/features/<tính-năng>/{data,domain,presentation}`; hạ tầng dùng chung ở `lib/core/{network,auth,push,cache,router,ui,utils}`. Tính năng không import trực tiếp tính năng khác – dùng provider/route.
+- `lib/generated/` là client sinh từ OpenAPI: không sửa tay, không commit. Bọc client sinh trong repository ở `data/`; UI/controller không gọi `dio` trực tiếp.
+
+## State và UI
+- Riverpod (generator). Controller (Notifier) giữ trạng thái; widget chỉ hiển thị. Trạng thái tải dữ liệu luôn có đủ 4 trường hợp: đang tải (skeleton), có dữ liệu, rỗng, lỗi (có nút thử lại + `traceId`).
+- Màu/khoảng cách/kiểu chữ lấy từ design tokens ở `core/ui`, không hard-code; hỗ trợ sáng/tối. Mọi chuỗi hiển thị bằng tiếng Việt qua `.arb`.
+- Phần tương tác phải có `Semantics`/nhãn truy cập; vùng chạm ≥ 48dp.
+
+## Dữ liệu và tiền
+- Tiền/lãi suất: `Decimal` (parse JSON thẳng, không qua `double`). Định dạng `1.234.567 ₫` (vi-VN) bằng helper dùng chung.
+- Ngày: máy chủ trả UTC; hiển thị theo múi giờ máy, gửi lại dạng ISO-8601.
+- CCCD/MST luôn ở dạng đã che từ API. Không log token (refresh/FCM), mật khẩu, PII; Sentry/`logger` phải lọc.
+
+## Xác thực và ghi dữ liệu
+- Không gửi `X-Auth-Mode: cookie` (đó là chế độ web). Refresh token ở secure storage; refresh **single-flight**; 401 → refresh một lần rồi thử lại; refresh thất bại → đăng xuất.
+- Đăng xuất: huỷ đăng ký thiết bị (`/api/devices/unregister`) trước, rồi `/api/auth/logout`.
+- Thao tác tiền: **sinh trắc ngay trước khi gửi**, xem trước (preview) → xác nhận, `Idempotency-Key` sinh một lần khi mở form và giữ khi thử lại. Thao tác hàng loạt gửi kèm tổng kỳ vọng.
+- Offline chỉ đọc: khoá nút ghi và hiện dải "đang offline"; không xếp hàng lệnh ghi.
+
+## Push
+- Đăng ký token sau đăng nhập và mỗi lần FCM đổi token (`POST /api/devices`). Điều hướng theo `data.type` + id; `link` là đường dẫn web, chỉ để tham khảo.
+
+## Chất lượng
+- `tool/check.sh` phải xanh trước khi đẩy mã. Mỗi lỗi sửa có test tái hiện. Widget quan trọng có golden test.
+- Không tuyên bố đã chạy/đã test mã Flutter nếu môi trường không có SDK.
