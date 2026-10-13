@@ -1,5 +1,7 @@
 # Tech stack
 
+> App này là **app nhân viên** (Viewer/Operator/Admin). App khách hàng là giai đoạn sau, chưa có thiết kế/backend.
+
 Cập nhật 13/10/2026 theo mã thực tế (M0 + M1 + M2). Phiên bản: `pubspec.yaml` / `pubspec.lock` là nguồn sự thật. Flutter stable 3.47 (Dart 3.13), Material 3, Android minSdk theo mặc định Flutter, iOS 15+.
 
 Cấu hình môi trường: `--dart-define-from-file=env/<flavor>.json` (mẫu `env/*.example.json`; tệp thật không commit). Prod bắt buộc `API_BASE_URL` dùng https (`AppConfig.validate`).

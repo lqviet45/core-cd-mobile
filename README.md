@@ -1,6 +1,8 @@
 # Core CD – Mobile (Flutter)
 
-Ứng dụng di động iOS/Android cho hệ thống quản lý **Chứng chỉ tiền gửi (CCTG)**. Backend và web ở repo [`Core-CD-Management`](https://github.com/lqviet45/Core-CD-Management); repo này **chỉ** chứa app Flutter.
+Ứng dụng di động iOS/Android cho hệ thống quản lý **Chứng chỉ tiền gửi (CCTG)**.
+
+> **Đối tượng dùng: NHÂN VIÊN nghiệp vụ (vai trò Viewer / Operator / Admin), không phải khách hàng.** Màn hình bám các artboard `Mob*` của bản thiết kế (app companion của web back-office). **App dành cho khách hàng chưa làm:** cần định danh/đăng nhập khách hàng và phân quyền theo chủ sở hữu ở backend (hiện chỉ có người dùng nội bộ `AppUser`) cùng thiết kế UI riêng; sẽ chốt phạm vi ở giai đoạn sau. Backend và web ở repo [`Core-CD-Management`](https://github.com/lqviet45/Core-CD-Management); repo này **chỉ** chứa app Flutter.
 
 > **Trạng thái:** M0 (nền, đăng nhập, khoá nhanh), M1 (màn chỉ đọc) và **M2 (thao tác ghi tiền)** đã có mã: mua CCTG 3 bước + theo dõi giao dịch, bán/tất toán có xem trước, tất toán sớm/đúng hạn, chi lãi (từng CCTG và hàng loạt), thêm khách hàng. Mọi thao tác tiền đi qua `MoneyGate` (online → đủ quyền Operator → sinh trắc/mã thiết bị **ngay trước khi gửi**) và dùng `Idempotency-Key`. `flutter analyze` sạch, 79 test pass, `flutter build web` qua; các luồng ghi đã chạy với backend thật (bản web, sinh trắc giả) và đối chiếu số liệu trên API. **Chưa kiểm chứng:** Android/iOS thật (không có SDK/Xcode ở môi trường dựng), sinh trắc thật, push (M3), xử lý giao dịch mua/bán đến trạng thái Thành công (cần Kafka).
 
