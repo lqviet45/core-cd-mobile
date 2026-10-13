@@ -1,0 +1,13 @@
+{
+  "openTotalFaceValue": 21100000000,
+  "openIssuedFaceValue": 3750000000,
+  "openRemainingFaceValue": 17350000000,
+  "nearlySoldOutCount": 4,
+  "totalCount": 31,
+  "byStatus": [
+    {
+      "status": "Open",
+      "count": 31
+    }
+  ]
+}

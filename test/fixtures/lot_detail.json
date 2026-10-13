@@ -1,0 +1,17 @@
+{
+  "id": "3226fbe8-eac0-4ff9-a818-3a1f15bf6338",
+  "lotCode": "CD26101336BCE2",
+  "interestRatePolicyId": "ee1babe2-ebba-4b04-88c6-19c1a98266ee",
+  "termName": "12 tháng",
+  "annualRatePct": 7.5,
+  "paymentMethod": "AtMaturity",
+  "totalFaceValue": 500000000,
+  "issuedFaceValue": 150000000,
+  "remainingFaceValue": 350000000,
+  "minPurchaseAmount": 1000000,
+  "issueDate": "2026-10-13T00:00:00Z",
+  "maturityDate": "2027-10-13T00:00:00Z",
+  "status": "Open",
+  "description": "e2e",
+  "certificateCount": 2
+}

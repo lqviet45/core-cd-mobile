@@ -1,0 +1,108 @@
+{
+  "asOfDate": "2026-10-13T00:00:00+00:00",
+  "totalActiveCertificates": 24,
+  "totalOutstandingPrincipal": 1970000000,
+  "totalEstimatedInterest": 122127537,
+  "byStatus": [
+    {
+      "status": "Đang hoạt động",
+      "count": 24,
+      "totalPrincipal": 1970000000,
+      "percentage": 100
+    }
+  ],
+  "byTerm": [
+    {
+      "termBucket": "3 – 6 tháng",
+      "count": 7,
+      "totalPrincipal": 420000000
+    },
+    {
+      "termBucket": "≤ 1 tháng",
+      "count": 1,
+      "totalPrincipal": 100000000
+    },
+    {
+      "termBucket": "6 – 12 tháng",
+      "count": 16,
+      "totalPrincipal": 1450000000
+    }
+  ],
+  "byPaymentMethod": [
+    {
+      "paymentMethod": "Trả hàng tháng",
+      "count": 7,
+      "totalPrincipal": 420000000
+    },
+    {
+      "paymentMethod": "Trả cuối kỳ",
+      "count": 17,
+      "totalPrincipal": 1550000000
+    }
+  ],
+  "byCustomerType": [
+    {
+      "customerType": "Cá nhân",
+      "count": 24,
+      "totalPrincipal": 1970000000
+    }
+  ],
+  "top10Customers": [
+    {
+      "customerName": "Khách Thử Nghiệm 890853",
+      "identityNumber": "078•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 4,
+      "totalPrincipal": 410000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 902067",
+      "identityNumber": "079•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 4,
+      "totalPrincipal": 410000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 057823",
+      "identityNumber": "070•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 3,
+      "totalPrincipal": 210000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 234709",
+      "identityNumber": "072•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 3,
+      "totalPrincipal": 210000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 240446",
+      "identityNumber": "072•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 3,
+      "totalPrincipal": 210000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 293789",
+      "identityNumber": "072•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 3,
+      "totalPrincipal": 210000000
+    },
+    {
+      "customerName": "Probe 847287",
+      "identityNumber": "088•••••7777",
+      "customerType": "Cá nhân",
+      "certificateCount": 2,
+      "totalPrincipal": 160000000
+    },
+    {
+      "customerName": "Khách Thử Nghiệm 980742",
+      "identityNumber": "079•••••9999",
+      "customerType": "Cá nhân",
+      "certificateCount": 2,
+      "totalPrincipal": 150000000
+    }
+  ]
+}

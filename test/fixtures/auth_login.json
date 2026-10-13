@@ -1,0 +1,15 @@
+{
+  "accessToken": "ACCESS_TOKEN",
+  "accessTokenExpiresAt": "2026-10-13T06:25:37.927979Z",
+  "refreshToken": "REFRESH_TOKEN",
+  "refreshTokenExpiresAt": "2026-10-20T06:10:37.9480093Z",
+  "user": {
+    "id": "c7b9e9ad-5683-40ca-a536-1df8f9f6c678",
+    "username": "admin",
+    "fullName": "Quản trị viên",
+    "role": "Admin",
+    "isActive": true,
+    "lastLoginAt": "2026-10-13T06:10:37.5803355Z",
+    "createdAt": "2026-10-13T02:50:20.826884Z"
+  }
+}
