@@ -105,7 +105,7 @@ void main() {
     final bio = await _pump(tester, routes: _routes());
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).at(0), 'admin');
-    await tester.enterText(find.byType(TextFormField).at(1), 'Admin@12345678');
+    await tester.enterText(find.byType(TextFormField).at(1), 'mat-khau-gia');
     await tester.tap(find.widgetWithText(FilledButton, 'Đăng nhập'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Xin chào'), findsOneWidget);
