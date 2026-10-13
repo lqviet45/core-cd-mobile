@@ -1,0 +1,62 @@
+{
+  "items": [
+    {
+      "certificateId": "b7c8c370-a89b-4c09-a9a6-33a84e907355",
+      "certificateNumber": "CDS26073057CA62B3",
+      "customerId": "eb00925c-758b-45c9-9cbb-3878b20cb7e6",
+      "customerName": "Lê Hoàng Cường",
+      "method": "Monthly",
+      "periodIndex": 1,
+      "periodTotal": 12,
+      "periodStart": "2026-07-30T00:00:00Z",
+      "periodEnd": "2026-08-30T00:00:00Z",
+      "days": 31,
+      "amount": 744000,
+      "dueDate": "2026-08-30T00:00:00Z",
+      "status": "Overdue",
+      "daysOverdue": 44,
+      "paidDate": null
+    },
+    {
+      "certificateId": "16d060e4-dafb-4629-b031-1a3640e76a51",
+      "certificateNumber": "CDS26073021D59A2F",
+      "customerId": "dc0c083f-d78c-4a01-bc18-43696031ff2a",
+      "customerName": "Phạm Thu Hà",
+      "method": "Monthly",
+      "periodIndex": 2,
+      "periodTotal": 12,
+      "periodStart": "2026-08-30T00:00:00Z",
+      "periodEnd": "2026-09-30T00:00:00Z",
+      "days": 31,
+      "amount": 496000,
+      "dueDate": "2026-09-30T00:00:00Z",
+      "status": "Overdue",
+      "daysOverdue": 13,
+      "paidDate": null
+    },
+    {
+      "certificateId": "b7c8c370-a89b-4c09-a9a6-33a84e907355",
+      "certificateNumber": "CDS26073057CA62B3",
+      "customerId": "eb00925c-758b-45c9-9cbb-3878b20cb7e6",
+      "customerName": "Lê Hoàng Cường",
+      "method": "Monthly",
+      "periodIndex": 2,
+      "periodTotal": 12,
+      "periodStart": "2026-08-30T00:00:00Z",
+      "periodEnd": "2026-09-30T00:00:00Z",
+      "days": 31,
+      "amount": 744000,
+      "dueDate": "2026-09-30T00:00:00Z",
+      "status": "Overdue",
+      "daysOverdue": 13,
+      "paidDate": null
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 3,
+  "totalCount": 3,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false,
+  "totalAmount": 1984000
+}

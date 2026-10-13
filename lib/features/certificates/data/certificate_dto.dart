@@ -155,3 +155,44 @@ class InterestSchedule {
   final Decimal paidTotal;
   final List<InterestPeriod> periods;
 }
+
+/// Xem trước tất toán trước hạn (máy chủ tính). Lãi KKH ở dạng thập phân (0,001 = 0,1%/năm).
+@JsonSerializable(createToJson: false)
+@DecimalConverter()
+@UtcDateConverter()
+class EarlyRedemptionPreview {
+  const EarlyRedemptionPreview({
+    required this.certificateNumber,
+    required this.principal,
+    required this.actualDays,
+    required this.demandRate,
+    required this.interestEarned,
+    required this.penaltyAmount,
+    required this.netAmount,
+    required this.redemptionDate,
+    required this.fee,
+    required this.feeEnabled,
+    required this.feeRate,
+    required this.feeWindowDays,
+  });
+
+  factory EarlyRedemptionPreview.fromJson(Map<String, dynamic> json) =>
+      _$EarlyRedemptionPreviewFromJson(json);
+
+  final String certificateNumber;
+  final Decimal principal;
+  final int actualDays;
+  final Decimal demandRate;
+  final Decimal interestEarned;
+
+  /// Lãi cam kết khách hàng bị mất do tất toán sớm.
+  final Decimal penaltyAmount;
+  final Decimal netAmount;
+  final DateTime redemptionDate;
+
+  /// Phí tất toán sớm đã trừ vào [netAmount] (tính theo công thức tạm thời, mặc định tắt).
+  final Decimal fee;
+  final bool feeEnabled;
+  final Decimal feeRate;
+  final int feeWindowDays;
+}

@@ -12,6 +12,7 @@ import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
 import '../data/certificate_dto.dart';
+import 'certificate_actions.dart';
 import 'certificate_providers.dart';
 
 /// Tỷ lệ thời hạn đã trôi qua của CCTG (0–1) và có đang sắp đáo hạn không.
@@ -217,6 +218,9 @@ class CertificateDetailScreen extends ConsumerWidget {
     final cert = ref.watch(certificateProvider(id));
     return Scaffold(
       appBar: AppBar(title: const Text('Chi tiết CCTG')),
+      bottomNavigationBar: cert.value == null
+          ? null
+          : CertificateActionBar(cert.value!),
       body: cert.when(
         loading: () => const ListSkeleton(rows: 3),
         error: (e, _) => ErrorState(
@@ -285,16 +289,6 @@ class CertificateDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 _InterestSchedule(id),
               ],
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  'Thao tác chi lãi và tất toán sẽ có ở bản sau.',
-                  style: context.text.bodySmall?.copyWith(
-                    color: context.scheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -357,11 +351,13 @@ class _CertificateHero extends StatelessWidget {
               children: [
                 Icon(LucideIcons.lock, size: 14, color: on),
                 const SizedBox(width: 6),
-                Text(
-                  'Đang phong tỏa ${formatMoney(c.holdAmount)}',
-                  style: context.text.bodySmall?.copyWith(
-                    color: on,
-                    fontWeight: FontWeight.w700,
+                Flexible(
+                  child: Text(
+                    'Đang phong tỏa ${formatMoney(c.holdAmount)}',
+                    style: context.text.bodySmall?.copyWith(
+                      color: on,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
@@ -382,10 +378,15 @@ class _CertificateHero extends StatelessWidget {
                 formatDate(c.issueDate),
                 style: context.text.bodySmall?.copyWith(color: on),
               ),
-              const Spacer(),
-              Text(
-                '${formatDate(c.maturityDate)}${c.isRedeemed ? '' : ' · ${formatDaysFrom(c.maturityDate, today)}'}',
-                style: context.text.bodySmall?.copyWith(color: on),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${formatDate(c.maturityDate)}${c.isRedeemed ? '' : ' · ${formatDaysFrom(c.maturityDate, today)}'}',
+                  textAlign: TextAlign.end,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.text.bodySmall?.copyWith(color: on),
+                ),
               ),
             ],
           ),

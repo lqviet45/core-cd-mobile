@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/auth_models.dart';
 import '../../../core/auth/providers.dart';
+import '../../../core/money/money_gate.dart';
 import '../../../core/network/api_call.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/network/connectivity.dart';
@@ -86,6 +87,13 @@ class MoreScreen extends ConsumerWidget {
                       chevron: true,
                       onTap: () => context.push('/more/maturities'),
                     ),
+                    if (ref.watch(canWriteProvider))
+                      ListRow(
+                        lead: const Lead(square: true, icon: LucideIcons.coins),
+                        title: 'Chi lãi định kỳ',
+                        chevron: true,
+                        onTap: () => context.push('/more/interest'),
+                      ),
                     ListRow(
                       lead: const Lead(
                         square: true,

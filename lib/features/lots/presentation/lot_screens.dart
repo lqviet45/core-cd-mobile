@@ -3,8 +3,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/api_providers.dart';
+import '../../../core/money/money_gate.dart';
 import '../../../core/ui/theme.dart';
 import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
@@ -335,6 +337,19 @@ class LotDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              if (ref.watch(canWriteProvider) &&
+                  l.status == 'Open' &&
+                  l.remainingFaceValue > Decimal.zero) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () => context.push('/trade/buy?lotId=${l.id}'),
+                    icon: const Icon(LucideIcons.download, size: 18),
+                    label: const Text('Mua CCTG từ đợt này'),
+                  ),
+                ),
+              ],
               const SizedBox(height: 12),
               ListGroup(
                 children: [

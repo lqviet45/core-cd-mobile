@@ -52,4 +52,37 @@ save('report_upcoming', await get('/api/reports/upcoming-maturities?daysAhead=30
 const to = new Date().toISOString().slice(0, 10);
 const from = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10);
 save('report_liquidity', await get(`/api/reports/liquidity?dateFrom=${from}&dateTo=${to}&groupBy=Month`));
+
+// ── Payload đọc cho luồng ghi (không đổi dữ liệu) ──
+const today = new Date().toISOString().slice(0, 10);
+const active = (await get('/api/certificates?status=Active&pageSize=50')).items.find((c) => new Date(c.maturityDate) > new Date());
+if (active) {
+  save('early_preview', await get(`/api/certificates/${active.id}/preview-early-redemption?redemptionDate=${today}&demandRate=0.001`));
+  const post = async (path, body) => { const r = await fetch(`${API}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) }); return r.json(); };
+  save('sell_preview', await post('/api/transactions/sell/preview', { customerId: active.customerId, sellType: 'All', quantity: null, targetAmount: null, redemptionDate: today, demandRate: 0.001 }));
+}
+const trx = (await get('/api/transactions?pageSize=1')).items[0];
+if (trx) save('transaction_detail', await get(`/api/transactions/${trx.id}`));
+save('interest_summary', await get('/api/settlement/interest/summary'));
+const overdue = await get('/api/settlement/interest/due?bucket=overdue&pageSize=3');
+save('interest_due_overdue', overdue);
+
+// ── Payload của lệnh GHI: chỉ chạy khi bật WRITES=1 (làm thay đổi dữ liệu thử nghiệm!) ──
+if (process.env.WRITES === '1') {
+  const w = async (path, body, headers = {}) => { const r = await fetch(`${API}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...headers }, body: JSON.stringify(body) }); return { status: r.status, body: await r.json() }; };
+  if (active) {
+    const lotId = active.lotId;
+    const b = await w('/api/transactions/buy', { customerId: active.customerId, lotId, principal: 1000000, issueDate: today, notes: null, channel: 'MOBILE' }, { 'Idempotency-Key': crypto.randomUUID() });
+    save('buy_created', b.body);
+  }
+  const i = overdue.items[0];
+  if (i) {
+    const r = await w('/api/settlement/interest/bulk-pay', { items: [{ certificateId: i.certificateId, periodStart: i.periodStart, periodEnd: i.periodEnd }, { certificateId: i.certificateId, periodStart: '2020-01-01', periodEnd: '2020-02-01' }] });
+    save('bulk_pay_result', r.body);
+  }
+  const c = await w('/api/customers', { customerType: 'Individual', cif: 'FX' + Date.now(), fullName: 'Khách thử', identityNumber: '0790000' + Date.now(), email: 'fx@example.com', phone: '0909000000', address: null });
+  save('customer_created', c.body);
+  const bad = await w('/api/customers', { customerType: 'Individual', cif: '', fullName: '', identityNumber: '', email: 'x', phone: '', address: null });
+  save('problem_validation', bad.body);
+}
 console.log('Xong.');

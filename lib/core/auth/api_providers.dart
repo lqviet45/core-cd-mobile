@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/certificates/data/certificate_repository.dart';
 import '../../features/customers/data/customer_repository.dart';
 import '../../features/dashboard/data/dashboard_repository.dart';
+import '../../features/interest/data/interest_repository.dart';
 import '../../features/lots/data/lot_repository.dart';
 import '../../features/notifications/data/notification_repository.dart';
 import '../../features/reports/data/report_repository.dart';
@@ -29,4 +30,7 @@ final transactionRepositoryProvider = Provider(
 );
 final notificationRepositoryProvider = Provider(
   (ref) => NotificationRepository(ref.watch(dioProvider)),
+);
+final interestRepositoryProvider = Provider(
+  (ref) => InterestRepository(ref.watch(dioProvider)),
 );

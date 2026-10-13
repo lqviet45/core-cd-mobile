@@ -1,0 +1,21 @@
+{
+  "title": "Dữ liệu không hợp lệ.",
+  "errors": {
+    "Cif": [
+      "CIF không được trống."
+    ],
+    "FullName": [
+      "Họ tên / Tên công ty không được trống."
+    ],
+    "IdentityNumber": [
+      "Số CMND/CCCD/MST không được trống."
+    ],
+    "Email": [
+      "Email không hợp lệ."
+    ],
+    "Phone": [
+      "Số điện thoại không được trống."
+    ]
+  },
+  "traceId": "fdfe4d1323b3bdcb63b091fca9ff8294"
+}

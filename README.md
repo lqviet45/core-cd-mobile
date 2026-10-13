@@ -2,7 +2,7 @@
 
 Ứng dụng di động iOS/Android cho hệ thống quản lý **Chứng chỉ tiền gửi (CCTG)**. Backend và web ở repo [`Core-CD-Management`](https://github.com/lqviet45/Core-CD-Management); repo này **chỉ** chứa app Flutter.
 
-> **Trạng thái:** M0 (nền, đăng nhập, khoá nhanh) và M1 (màn chỉ đọc: Tổng quan, CCTG, Giao dịch, Khách hàng, Đợt phát hành, Lịch đáo hạn, Báo cáo, Thông báo, Trạng thái, Tài khoản & phiên) đã có mã. `flutter analyze` sạch, 45 test pass, `flutter build web` qua, bản web đã chạy với backend thật. **Chưa kiểm chứng:** build/chạy trên Android/iOS thật (môi trường dựng không có Android SDK/Xcode), sinh trắc thật, push. Chưa có thao tác ghi (M2).
+> **Trạng thái:** M0 (nền, đăng nhập, khoá nhanh), M1 (màn chỉ đọc) và **M2 (thao tác ghi tiền)** đã có mã: mua CCTG 3 bước + theo dõi giao dịch, bán/tất toán có xem trước, tất toán sớm/đúng hạn, chi lãi (từng CCTG và hàng loạt), thêm khách hàng. Mọi thao tác tiền đi qua `MoneyGate` (online → đủ quyền Operator → sinh trắc/mã thiết bị **ngay trước khi gửi**) và dùng `Idempotency-Key`. `flutter analyze` sạch, 79 test pass, `flutter build web` qua; các luồng ghi đã chạy với backend thật (bản web, sinh trắc giả) và đối chiếu số liệu trên API. **Chưa kiểm chứng:** Android/iOS thật (không có SDK/Xcode ở môi trường dựng), sinh trắc thật, push (M3), xử lý giao dịch mua/bán đến trạng thái Thành công (cần Kafka).
 
 ## Bắt đầu
 1. Cài Flutter **stable** (`flutter doctor` sạch cho Android/iOS).
@@ -11,6 +11,7 @@
 4. Đồng bộ hợp đồng API khi backend đổi: `tool/sync_api.sh ../Core-CD-Management`, rồi cập nhật DTO và fixture (`API=http://localhost:5080 PASS=... node tool/capture_fixtures.mjs`).
 5. Firebase (push, M3): thêm `google-services.json` / `GoogleService-Info.plist` – **không commit**.
 6. Trước khi đẩy mã: `tool/check.sh`. Dự án **không dùng CI**.
+7. Duyệt các luồng ghi trên web với backend thật: `flutter build web --target=tool/verify/verify_web_main.dart --dart-define=API_BASE_URL=http://localhost:5080` (bản này thay sinh trắc bằng bản luôn đồng ý vì `local_auth` không chạy trên web; **chỉ để kiểm thử, không phát hành**). Làm mới fixture của luồng ghi: `WRITES=1 API=... PASS=... node tool/capture_fixtures.mjs` (làm thay đổi dữ liệu thử nghiệm!).
 
 ## Tài liệu
 | Tệp | Nội dung |

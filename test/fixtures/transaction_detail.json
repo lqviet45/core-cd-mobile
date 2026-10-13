@@ -1,0 +1,19 @@
+{
+  "id": "61781d08-6945-4798-b0f1-6918645b0916",
+  "trxNo": "TRX2026101307352153B2BE",
+  "channel": "MOBILE",
+  "cif": "CIF1003",
+  "type": "BuySecondary",
+  "amount": 5000000,
+  "status": "Pending",
+  "fundTransferStatus": "Pending",
+  "cdTransferStatus": "Pending",
+  "errorDescription": null,
+  "createdAt": "2026-10-13T07:35:21.175081Z",
+  "updatedAt": null,
+  "createdBy": "admin",
+  "retryOfTransactionId": null,
+  "retriedByTransactionId": null,
+  "contractCode": null,
+  "contractFileId": null
+}

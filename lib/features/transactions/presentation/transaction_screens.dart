@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/api_providers.dart';
 import '../../../core/models/paged.dart';
+import '../../../core/money/money_gate.dart';
 import '../../../core/paging/paged_notifier.dart';
 import '../../../core/ui/paged_list.dart';
 import '../../../core/ui/theme.dart';
@@ -85,7 +89,17 @@ class TransactionListScreen extends ConsumerWidget {
     return Scaffold(
       body: Column(
         children: [
-          const BigHeader('Giao dịch'),
+          BigHeader(
+            'Giao dịch',
+            actions: [
+              if (ref.watch(canWriteProvider))
+                IconBtn(
+                  icon: LucideIcons.plus,
+                  label: 'Giao dịch mới',
+                  onPressed: () => _showNewTrade(context),
+                ),
+            ],
+          ),
           FilterChipsRow<String>(
             options: const [
               ('', 'Tất cả'),
@@ -147,6 +161,7 @@ class _TransactionRow extends StatelessWidget {
           icon: _isSell(t.type) ? LucideIcons.upload : LucideIcons.download,
           kind: failed ? LeadKind.error : LeadKind.primary,
         ),
+        onTap: () => context.push('/transactions/${t.id}'),
         title: '${trxTypeLabel(t.type)} · ${t.cif}',
         subtitle: '${_time(t.createdAt)} · ${t.channel}',
         trailing: Column(
@@ -165,3 +180,31 @@ class _TransactionRow extends StatelessWidget {
     );
   }
 }
+
+void _showNewTrade(BuildContext context) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  builder: (sheet) => SafeArea(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: const Icon(LucideIcons.download),
+          title: const Text('Mua CCTG'),
+          onTap: () {
+            Navigator.of(sheet).pop();
+            unawaited(context.push('/trade/buy'));
+          },
+        ),
+        ListTile(
+          leading: const Icon(LucideIcons.upload),
+          title: const Text('Bán / Tất toán'),
+          onTap: () {
+            Navigator.of(sheet).pop();
+            unawaited(context.push('/trade/sell'));
+          },
+        ),
+      ],
+    ),
+  ),
+);
