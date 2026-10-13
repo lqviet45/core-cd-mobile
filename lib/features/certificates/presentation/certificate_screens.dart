@@ -11,6 +11,7 @@ import '../../../core/ui/theme.dart';
 import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
+import '../../documents/presentation/documents_section.dart';
 import '../data/certificate_dto.dart';
 import 'certificate_actions.dart';
 import 'certificate_providers.dart';
@@ -289,6 +290,15 @@ class CertificateDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 _InterestSchedule(id),
               ],
+              const SizedBox(height: 12),
+              DocumentsSection(
+                ownerType: 'Certificate',
+                ownerId: c.id,
+                generate: (
+                  path: '/api/certificates/${c.id}/pdf',
+                  label: 'Tạo chứng chỉ PDF',
+                ),
+              ),
             ],
           ),
         ),

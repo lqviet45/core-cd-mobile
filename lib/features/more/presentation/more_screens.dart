@@ -16,6 +16,7 @@ import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
 import '../../../core/utils/text.dart';
 import '../../dashboard/presentation/providers.dart';
+import 'settings_sections.dart';
 
 /// M23 – Tab "Thêm".
 class MoreScreen extends ConsumerWidget {
@@ -260,32 +261,34 @@ class AccountScreen extends ConsumerWidget {
           ),
           const SectionHeader('Bảo mật'),
           const SizedBox(height: 8),
-          ListGroup(
-            children: [
-              InfoRow(
-                'Khoá nhanh',
-                lockable.when(
-                  data: (v) => v
-                      ? 'Đang bật (sinh trắc / mã thiết bị)'
-                      : 'Không khả dụng',
-                  loading: () => '…',
-                  error: (_, __) => 'Không khả dụng',
-                ),
+          SecuritySettings(lockable: lockable.value ?? false),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              'Đăng nhập gần nhất: ${formatDateTime(user.lastLoginAt)}. Thao tác tiền luôn yêu cầu xác thực riêng, '
+              'kể cả khi tắt khoá nhanh.',
+              style: context.text.bodySmall?.copyWith(
+                color: context.scheme.onSurfaceVariant,
               ),
-              const InfoRow('Tự khoá sau', '1 phút khi ở nền'),
-              InfoRow('Đăng nhập gần nhất', formatDateTime(user.lastLoginAt)),
-            ],
+            ),
           ),
           if (lockable.value == false)
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
               child: Text(
-                'Thiết bị chưa đặt khoá màn hình/sinh trắc nên không thể bật khoá nhanh. Các thao tác tiền (bản sau) sẽ yêu cầu thiết bị được bảo vệ.',
+                'Thiết bị chưa đặt khoá màn hình/sinh trắc nên không thể bật khoá nhanh và các thao tác tiền sẽ bị từ chối.',
                 style: context.text.bodySmall?.copyWith(
                   color: context.scheme.error,
                 ),
               ),
             ),
+          const SectionHeader('Giao diện'),
+          const SizedBox(height: 8),
+          const AppearanceSettings(),
+          const SectionHeader('Thông báo'),
+          const SizedBox(height: 8),
+          const NotificationSettings(),
           SectionHeader(
             'Thiết bị đang đăng nhập${sessions.value == null ? '' : ' (${sessions.value!.length})'}',
           ),

@@ -1,18 +1,27 @@
 import 'package:core_cd_mobile/app.dart';
+import 'package:core_cd_mobile/core/auth/api_providers.dart';
 import 'package:core_cd_mobile/core/auth/auth_api.dart';
 import 'package:core_cd_mobile/core/auth/biometric.dart';
 import 'package:core_cd_mobile/core/auth/providers.dart';
 import 'package:core_cd_mobile/core/auth/token_store.dart';
+import 'package:core_cd_mobile/core/cache/blob_store.dart';
+import 'package:core_cd_mobile/core/cache/encrypted_cache.dart';
 import 'package:core_cd_mobile/core/config/app_config.dart';
 import 'package:core_cd_mobile/core/network/auth_interceptor.dart';
+import 'package:core_cd_mobile/core/network/retry_policy.dart';
+import 'package:core_cd_mobile/core/push/push_registrar.dart';
 import 'package:core_cd_mobile/core/router/app_router.dart';
+import 'package:core_cd_mobile/core/settings/app_prefs.dart';
+import 'package:core_cd_mobile/features/documents/presentation/document_providers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fake_api.dart';
+import 'fakes.dart';
 import 'fixtures.dart';
 
 class FakeBiometric implements BiometricAuthenticator {
@@ -54,7 +63,20 @@ Map<String, FakeHandler> baseRoutes({String role = 'Admin'}) => {
 };
 
 class Harness {
-  Harness(this.tester, this.adapter, this.bio, this.container);
+  Harness(
+    this.tester,
+    this.adapter,
+    this.bio,
+    this.container, {
+    required this.pushSource,
+    required this.opener,
+    required this.picker,
+    required this.prefs,
+  });
+  final FakePushTokenSource pushSource;
+  final FakeOpener opener;
+  final FakePicker picker;
+  final SharedPreferences prefs;
   final WidgetTester tester;
   final FakeAdapter adapter;
   final FakeBiometric bio;
@@ -89,19 +111,40 @@ Future<Harness> pumpSignedIn(
   WidgetTester tester, {
   required Map<String, FakeHandler> routes,
   String role = 'Admin',
+  Map<String, Object> prefs = const {},
+  String? pushToken,
+  FakeAdapter? storage,
 }) async {
   final bio = FakeBiometric();
+  final pushSource = FakePushTokenSource(pushToken);
+  final opener = FakeOpener();
+  final picker = FakePicker();
+  SharedPreferences.setMockInitialValues(prefs);
+  final sp = await SharedPreferences.getInstance();
   final adapter = FakeAdapter({...baseRoutes(role: role), ...routes});
   await tester.binding.setSurfaceSize(const Size(390, 844));
   addTearDown(() => tester.binding.setSurfaceSize(null));
   await tester.pumpWidget(
     ProviderScope(
+      retry: noAutoRetry,
       overrides: [
         appConfigProvider.overrideWithValue(
           const AppConfig(apiBaseUrl: 'http://fake', envName: 'dev'),
         ),
         tokenStoreProvider.overrideWithValue(InMemoryTokenStore('REFRESH')),
         biometricProvider.overrideWithValue(bio),
+        sharedPrefsProvider.overrideWithValue(sp),
+        cacheProvider.overrideWithValue(
+          EncryptedCache(
+            MemoryBlobStore(),
+            FixedCacheKeyProvider(List<int>.filled(32, 7)),
+          ),
+        ),
+        if (storage != null)
+          storageDioProvider.overrideWithValue(fakeDio(storage)),
+        pushTokenSourceProvider.overrideWithValue(pushSource),
+        documentOpenerProvider.overrideWithValue(opener),
+        imageSourcePickerProvider.overrideWithValue(picker),
         authApiProvider.overrideWithValue(
           AuthApi(fakeDio(adapter), deviceName: 'test'),
         ),
@@ -120,5 +163,14 @@ Future<Harness> pumpSignedIn(
   final container = ProviderScope.containerOf(
     tester.element(find.byType(CoreCdApp)),
   );
-  return Harness(tester, adapter, bio, container);
+  return Harness(
+    tester,
+    adapter,
+    bio,
+    container,
+    pushSource: pushSource,
+    opener: opener,
+    picker: picker,
+    prefs: sp,
+  );
 }

@@ -16,6 +16,7 @@ import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
 import '../../../core/utils/text.dart';
 import '../../certificates/presentation/certificate_providers.dart';
+import '../../documents/presentation/documents_section.dart';
 import '../data/customer_dto.dart';
 
 class CustomerQuery {
@@ -308,6 +309,13 @@ class CustomerDetailScreen extends ConsumerWidget {
                   ],
                   InfoRow('Ngày tạo', formatDate(c.createdAt)),
                 ],
+              ),
+              const SizedBox(height: 12),
+              DocumentsSection(
+                ownerType: 'Customer',
+                ownerId: c.id,
+                uploadKind: c.isBusiness ? 'KycBusinessLicense' : 'KycIdentity',
+                uploadLabel: c.isBusiness ? 'Tải giấy ĐKKD' : 'Chụp CCCD',
               ),
               const SectionHeader('Chứng chỉ gần đây'),
               const SizedBox(height: 8),

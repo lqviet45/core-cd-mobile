@@ -724,7 +724,10 @@ class ErrorState extends StatelessWidget {
 
 /// Dải thông báo mất mạng (`.m-card.er` trong MobStates).
 class OfflineBanner extends StatelessWidget {
-  const OfflineBanner({super.key});
+  const OfflineBanner({super.key, this.savedAt});
+
+  /// Thời điểm của dữ liệu đang hiển thị từ bản đệm (nếu có).
+  final DateTime? savedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -744,14 +747,16 @@ class OfflineBanner extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text.rich(
-                const TextSpan(
+                TextSpan(
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: 'Không có mạng. ',
                       style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                     TextSpan(
-                      text: 'Đang hiển thị dữ liệu đã tải; các thao tác ghi bị khoá.',
+                      text: savedAt == null
+                          ? 'Đang hiển thị dữ liệu đã tải; các thao tác ghi bị khoá.'
+                          : 'Đang hiển thị dữ liệu lưu lúc ${formatDateTime(savedAt)}. Nút ghi bị khoá.',
                     ),
                   ],
                 ),

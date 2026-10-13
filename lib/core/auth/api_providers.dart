@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/certificates/data/certificate_repository.dart';
 import '../../features/customers/data/customer_repository.dart';
 import '../../features/dashboard/data/dashboard_repository.dart';
+import '../../features/documents/data/document_repository.dart';
 import '../../features/interest/data/interest_repository.dart';
 import '../../features/lots/data/lot_repository.dart';
 import '../../features/notifications/data/notification_repository.dart';
@@ -33,4 +35,14 @@ final notificationRepositoryProvider = Provider(
 );
 final interestRepositoryProvider = Provider(
   (ref) => InterestRepository(ref.watch(dioProvider)),
+);
+
+/// Dio **trần** cho URL ngắn hạn của kho tệp: không token, không baseUrl (ghi đè trong test).
+final storageDioProvider = Provider<Dio>((ref) => Dio());
+
+final documentRepositoryProvider = Provider(
+  (ref) => DocumentRepository(
+    ref.watch(dioProvider),
+    storage: ref.watch(storageDioProvider),
+  ),
 );
