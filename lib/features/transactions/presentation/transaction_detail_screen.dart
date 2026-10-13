@@ -13,6 +13,7 @@ import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
 import '../../dashboard/data/dashboard_dto.dart';
+import '../../documents/presentation/documents_section.dart';
 import '../../trading/presentation/trading_providers.dart';
 
 enum _StepState { done, active, fail, wait }
@@ -245,6 +246,19 @@ class _BodyState extends ConsumerState<_Body> {
                   action: 'Xem lệnh mới',
                   onTap: () =>
                       context.go('/transactions/${t.retriedByTransactionId}'),
+                ),
+              ],
+              if (t.status == 'Success') ...[
+                const SizedBox(height: 12),
+                DocumentsSection(
+                  ownerType: 'Transaction',
+                  ownerId: t.id,
+                  generate: (
+                    path: '/api/transactions/${t.id}/contract',
+                    label: 'Tạo hợp đồng',
+                  ),
+                  uploadKind: 'SignedContract',
+                  uploadLabel: 'Tải bản đã ký',
                 ),
               ],
               if (!t.isTerminal) ...[

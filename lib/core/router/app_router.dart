@@ -12,9 +12,11 @@ import '../../features/customers/presentation/new_customer_screen.dart';
 import '../../features/dashboard/presentation/home_screen.dart';
 import '../../features/interest/presentation/interest_screen.dart';
 import '../../features/lots/presentation/lot_screens.dart';
+import '../../features/more/presentation/change_password_screen.dart';
 import '../../features/more/presentation/more_screens.dart';
 import '../../features/notifications/presentation/notification_screens.dart';
 import '../../features/reports/presentation/report_screens.dart';
+import '../../features/search/presentation/search_screen.dart';
 import '../../features/trading/presentation/buy_screens.dart';
 import '../../features/trading/presentation/sell_screen.dart';
 import '../../features/transactions/presentation/transaction_detail_screen.dart';
@@ -79,6 +81,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: 'review', builder: (_, __) => const BuyReviewScreen()),
         ],
       ),
+      GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
       GoRoute(
         path: '/trade/sell',
         builder: (_, s) =>
@@ -177,6 +180,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'account',
                     builder: (_, __) => const AccountScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'password',
+                        builder: (_, __) => const ChangePasswordScreen(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -206,10 +215,12 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final online = ref.watch(isOnlineProvider).value ?? true;
+    final staleSince = ref.watch(staleSinceProvider);
     return Scaffold(
       body: Column(
         children: [
-          if (!online) const SafeArea(bottom: false, child: OfflineBanner()),
+          if (!online || staleSince != null)
+            SafeArea(bottom: false, child: OfflineBanner(savedAt: staleSince)),
           Expanded(child: shell),
         ],
       ),

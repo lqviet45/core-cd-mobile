@@ -9,6 +9,7 @@ import '../../../core/paging/paged_notifier.dart';
 import '../../../core/ui/paged_list.dart';
 import '../../../core/ui/theme.dart';
 import '../../../core/ui/widgets.dart';
+import '../../../core/utils/deep_link.dart';
 import '../../dashboard/presentation/providers.dart';
 import '../data/notification_repository.dart';
 
@@ -55,18 +56,6 @@ final notificationsProvider =
   ),
   _ => (icon: LucideIcons.bell, kind: LeadKind.primary),
 };
-
-/// Đường dẫn web của backend → màn hình mobile tương ứng (null = không có trang đích).
-String? _routeFor(String? link) {
-  if (link == null) return null;
-  final lot = RegExp(r'^/lots/([0-9a-f-]{36})$').firstMatch(link);
-  if (lot != null) return '/more/lots/${lot.group(1)}';
-  if (link == '/settlement') return '/more/maturities';
-  if (link == '/transactions' || link.startsWith('/transactions/')) {
-    return '/transactions';
-  }
-  return null;
-}
 
 String _timeAgo(DateTime d) {
   final l = d.toLocal();
@@ -150,7 +139,7 @@ class NotificationsScreen extends ConsumerWidget {
                         ),
                       ),
                       onTap: () async {
-                        final route = _routeFor(n.linkUrl);
+                        final route = routeForLink(n.linkUrl);
                         if (!n.isRead) {
                           await ref
                               .read(notificationRepositoryProvider)
@@ -159,7 +148,8 @@ class NotificationsScreen extends ConsumerWidget {
                           await notifier.refresh();
                         }
                         if (route != null && context.mounted) {
-                          await context.push(route);
+                          // `go` vì /notifications nằm ngoài shell (xem SearchScreen._open).
+                          context.go(route);
                         }
                       },
                     ),

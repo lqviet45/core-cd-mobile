@@ -3,14 +3,13 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../settings/app_prefs.dart';
 import 'providers.dart';
 
-/// Khoá nhanh: sau khi app ở nền quá [lockAfter], hoặc khi mở lại app với phiên đã lưu, phải xác thực
+/// Khoá nhanh: sau khi app ở nền quá thời gian đặt trong Cài đặt, hoặc khi mở lại app với phiên đã lưu, phải xác thực
 /// sinh trắc/mã thiết bị mới xem tiếp được dữ liệu. Nếu thiết bị không có khoá màn hình thì không thể
 /// bắt buộc (và các thao tác tiền ở M2 sẽ từ chối).
 class AppLockController extends Notifier<bool> with WidgetsBindingObserver {
-  static const lockAfter = Duration(seconds: 60);
-
   DateTime? _pausedAt;
 
   /// Cho test chỉnh đồng hồ.
@@ -23,7 +22,10 @@ class AppLockController extends Notifier<bool> with WidgetsBindingObserver {
 
     // Phiên khôi phục từ lần mở trước → khoá ngay; đăng nhập mới → mở; đăng xuất → bỏ khoá.
     ref.listen(authControllerProvider, (prev, next) async {
-      if (next is AuthSignedIn && next.restored) {
+      final enabled = ref.read(appPrefsProvider).lockEnabled;
+      if (next is AuthSignedIn && next.restored && !enabled) {
+        state = false;
+      } else if (next is AuthSignedIn && next.restored) {
         state =
             true; // khoá ngay để không lộ dữ liệu trong lúc kiểm tra thiết bị
         if (!await _lockable()) state = false;
@@ -48,7 +50,10 @@ class AppLockController extends Notifier<bool> with WidgetsBindingObserver {
     } else if (lifecycle == AppLifecycleState.resumed) {
       final since = _pausedAt;
       _pausedAt = null;
-      if (since != null && clock().difference(since) >= lockAfter) {
+      final prefs = ref.read(appPrefsProvider);
+      if (prefs.lockEnabled &&
+          since != null &&
+          clock().difference(since) >= prefs.lockAfter) {
         unawaited(_lockIfSignedIn());
       }
     }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/providers.dart';
+import '../../../core/settings/app_prefs.dart';
 import '../../../core/ui/theme.dart';
 import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     final dash = ref.watch(dashboardProvider);
     final unread = ref.watch(unreadCountProvider).value ?? 0;
+    final hide = ref.watch(appPrefsProvider.select((p) => p.hideAmounts));
 
     Future<void> refresh() async {
       ref
@@ -67,6 +69,11 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   IconBtn(
+                    icon: LucideIcons.search,
+                    label: 'Tìm kiếm',
+                    onPressed: () => context.push('/search'),
+                  ),
+                  IconBtn(
                     icon: LucideIcons.bell,
                     label: 'Thông báo',
                     badge: unread,
@@ -87,9 +94,9 @@ class HomeScreen extends ConsumerWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   children: [
-                    _OutstandingCard(d),
+                    _OutstandingCard(d, hide: hide),
                     const SizedBox(height: 12),
-                    _AlertCards(d),
+                    _AlertCards(d, hide: hide),
                     const SizedBox(height: 20),
                     const _Shortcuts(),
                     const SizedBox(height: 8),
@@ -99,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
                       onAction: () => context.push('/more/maturities'),
                     ),
                     const SizedBox(height: 8),
-                    _UpcomingList(asOf: d.asOfDate),
+                    _UpcomingList(asOf: d.asOfDate, hide: hide),
                   ],
                 ),
               ),
@@ -111,9 +118,13 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+/// Số tiền khi bật "Ẩn số tiền".
+String _m(bool hide, String s) => hide ? '••••••' : s;
+
 class _OutstandingCard extends StatelessWidget {
-  const _OutstandingCard(this.d);
+  const _OutstandingCard(this.d, {required this.hide});
   final Dashboard d;
+  final bool hide;
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +154,12 @@ class _OutstandingCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Semantics(
-            label: 'Dư nợ gốc ${formatMoney(d.outstandingPrincipal)}',
+            label: hide
+                ? 'Dư nợ gốc đang ẩn'
+                : 'Dư nợ gốc ${formatMoney(d.outstandingPrincipal)}',
             child: ExcludeSemantics(
               child: Text(
-                '${formatCompact(d.outstandingPrincipal)} ₫',
+                _m(hide, '${formatCompact(d.outstandingPrincipal)} ₫'),
                 style: context.text.displayMedium?.copyWith(color: on),
               ),
             ),
@@ -156,7 +169,10 @@ class _OutstandingCard extends StatelessWidget {
             children: [
               stat('CCTG nắm giữ', formatInt(d.holdingCertificates)),
               stat('Khách hàng', formatInt(d.activeCustomers)),
-              stat('Hạn mức còn', formatCompact(d.openLotsRemainingFaceValue)),
+              stat(
+                'Hạn mức còn',
+                _m(hide, formatCompact(d.openLotsRemainingFaceValue)),
+              ),
             ],
           ),
         ],
@@ -166,8 +182,9 @@ class _OutstandingCard extends StatelessWidget {
 }
 
 class _AlertCards extends StatelessWidget {
-  const _AlertCards(this.d);
+  const _AlertCards(this.d, {required this.hide});
   final Dashboard d;
+  final bool hide;
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +239,7 @@ class _AlertCards extends StatelessWidget {
             icon: LucideIcons.calendar,
             title: 'Đáo hạn 7 ngày',
             value: formatInt(d.maturing7DaysCount),
-            sub: '${formatCompact(d.maturing7DaysPrincipal)} ₫',
+            sub: _m(hide, '${formatCompact(d.maturing7DaysPrincipal)} ₫'),
           ),
           const SizedBox(width: 12),
           card(
@@ -295,8 +312,9 @@ class _Shortcuts extends StatelessWidget {
 }
 
 class _UpcomingList extends ConsumerWidget {
-  const _UpcomingList({required this.asOf});
+  const _UpcomingList({required this.asOf, required this.hide});
   final DateTime asOf;
+  final bool hide;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -358,7 +376,7 @@ class _UpcomingList extends ConsumerWidget {
                 subtitle:
                     '${formatDaysFrom(g.maturityDate, asOf)} · ${i.certificateNumber}',
                 trailing: Text(
-                  '${formatCompact(i.estimatedPayout)} ₫',
+                  _m(hide, '${formatCompact(i.estimatedPayout)} ₫'),
                   style: context.text.titleMedium,
                 ),
                 onTap: () => context.push('/more/maturities'),

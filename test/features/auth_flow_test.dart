@@ -5,10 +5,13 @@ import 'package:core_cd_mobile/core/auth/providers.dart';
 import 'package:core_cd_mobile/core/auth/token_store.dart';
 import 'package:core_cd_mobile/core/config/app_config.dart';
 import 'package:core_cd_mobile/core/network/auth_interceptor.dart';
+import 'package:core_cd_mobile/core/network/retry_policy.dart';
+import 'package:core_cd_mobile/core/settings/app_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/fake_api.dart';
 import '../helpers/fixtures.dart';
@@ -54,6 +57,8 @@ Future<_FakeBiometric> _pump(
   String? storedToken,
   _FakeBiometric? bio,
 }) async {
+  SharedPreferences.setMockInitialValues({});
+  final prefs = await SharedPreferences.getInstance();
   final biometric = bio ?? _FakeBiometric();
   final adapter = FakeAdapter(routes);
   final store = InMemoryTokenStore(storedToken);
@@ -61,12 +66,14 @@ Future<_FakeBiometric> _pump(
   addTearDown(() => tester.binding.setSurfaceSize(null));
   await tester.pumpWidget(
     ProviderScope(
+      retry: noAutoRetry,
       overrides: [
         appConfigProvider.overrideWithValue(
           const AppConfig(apiBaseUrl: 'http://fake', envName: 'dev'),
         ),
         tokenStoreProvider.overrideWithValue(store),
         biometricProvider.overrideWithValue(biometric),
+        sharedPrefsProvider.overrideWithValue(prefs),
         authApiProvider.overrideWithValue(
           AuthApi(fakeDio(adapter), deviceName: 'test'),
         ),
