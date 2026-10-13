@@ -1,0 +1,106 @@
+{
+  "asOfDate": "2026-10-13T00:00:00Z",
+  "activeCustomers": 11,
+  "holdingCertificates": 24,
+  "outstandingPrincipal": 1970000000,
+  "openLots": 31,
+  "openLotsRemainingFaceValue": 17350000000,
+  "maturing7DaysCount": 0,
+  "maturing7DaysPrincipal": 0,
+  "maturing30DaysCount": 0,
+  "maturing30DaysPrincipal": 0,
+  "pendingTransactions": 4,
+  "failedTransactionsLast24h": 0,
+  "issuedThisMonth": 2250000000,
+  "certificatesByStatus": [
+    {
+      "status": "Active",
+      "count": 24,
+      "principal": 1970000000
+    },
+    {
+      "status": "RedeemedAtMaturity",
+      "count": 6,
+      "principal": 600000000
+    },
+    {
+      "status": "RedeemedEarly",
+      "count": 4,
+      "principal": 800000000
+    }
+  ],
+  "issuedLast30Days": [
+    {
+      "date": "2026-10-03T00:00:00Z",
+      "count": 6,
+      "amount": 1200000000
+    },
+    {
+      "date": "2026-10-13T00:00:00Z",
+      "count": 14,
+      "amount": 1050000000
+    }
+  ],
+  "recentTransactions": [
+    {
+      "id": "c11a3b49-a5dd-4706-a58f-8fc1b9dc1398",
+      "trxNo": "TRX20261013040713FBA397",
+      "channel": "WEB",
+      "cif": "PV433568",
+      "type": "BuySecondary",
+      "amount": 95000000,
+      "status": "Pending",
+      "fundTransferStatus": "Pending",
+      "cdTransferStatus": "Pending",
+      "errorDescription": null,
+      "createdAt": "2026-10-13T04:07:13.61125Z",
+      "updatedAt": null,
+      "createdBy": null,
+      "retryOfTransactionId": null,
+      "retriedByTransactionId": null,
+      "contractCode": null,
+      "contractFileId": null
+    },
+    {
+      "id": "55705fb3-f14a-4c76-9753-2098fc69d36a",
+      "trxNo": "TRX20261013040701B51584",
+      "channel": "WEB",
+      "cif": "PU414467",
+      "type": "BuySecondary",
+      "amount": 95000000,
+      "status": "Pending",
+      "fundTransferStatus": "Pending",
+      "cdTransferStatus": "Pending",
+      "errorDescription": null,
+      "createdAt": "2026-10-13T04:07:01.121297Z",
+      "updatedAt": null,
+      "createdBy": null,
+      "retryOfTransactionId": null,
+      "retriedByTransactionId": null,
+      "contractCode": null,
+      "contractFileId": null
+    },
+    {
+      "id": "42150d81-01ea-43a2-876f-0675a0e35b46",
+      "trxNo": "TRX20261013033137943398",
+      "channel": "WEB",
+      "cif": "E2E293789",
+      "type": "BuySecondary",
+      "amount": 95000000,
+      "status": "Pending",
+      "fundTransferStatus": "Pending",
+      "cdTransferStatus": "Pending",
+      "errorDescription": null,
+      "createdAt": "2026-10-13T03:31:37.590454Z",
+      "updatedAt": null,
+      "createdBy": null,
+      "retryOfTransactionId": null,
+      "retriedByTransactionId": null,
+      "contractCode": null,
+      "contractFileId": null
+    }
+  ],
+  "individualCustomers": 11,
+  "businessCustomers": 0,
+  "lotsNearlySoldOut": 4
+}

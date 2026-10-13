@@ -1,0 +1,33 @@
+{
+  "id": "3226fbe8-eac0-4ff9-a818-3a1f15bf6338",
+  "lotCode": "CD26101336BCE2",
+  "totalFaceValue": 500000000,
+  "issuedFaceValue": 150000000,
+  "remainingFaceValue": 350000000,
+  "certificateCount": 2,
+  "soldPercent": 30,
+  "expectedInterest": 11250000,
+  "averagePrincipal": 75000000,
+  "maxPrincipal": 100000000,
+  "issuedByDay": [
+    {
+      "date": "2026-10-13T00:00:00Z",
+      "count": 2,
+      "amount": 150000000
+    }
+  ],
+  "buyerMix": [
+    {
+      "customerType": "Individual",
+      "certificateCount": 2,
+      "principal": 150000000,
+      "percent": 100
+    },
+    {
+      "customerType": "Business",
+      "certificateCount": 0,
+      "principal": 0,
+      "percent": 0
+    }
+  ]
+}

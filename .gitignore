@@ -33,5 +33,5 @@ env/*.json
 *.p8
 *.p12
 *.mobileprovision
-# Client sinh từ OpenAPI: sinh lại bằng tool/gen_api.sh
-lib/generated/
+.flutter-plugins-dependencies
+.flutter-plugins

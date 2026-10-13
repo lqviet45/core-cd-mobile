@@ -4,6 +4,5 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 dart format --output=none --set-exit-if-changed lib test
 flutter analyze
-dart run custom_lint
 flutter test
 echo "OK"

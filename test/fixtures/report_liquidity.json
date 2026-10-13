@@ -1,0 +1,49 @@
+{
+  "dateFrom": "2026-07-15T00:00:00",
+  "dateTo": "2026-10-13T00:00:00",
+  "totalPrincipalOutflow": 100000000,
+  "totalInterestOutflow": 2255013,
+  "totalOutflow": 102255013,
+  "byPeriod": [
+    {
+      "periodLabel": "07/2026",
+      "periodStart": "2026-07-15T00:00:00",
+      "periodEnd": "2026-07-31T00:00:00",
+      "maturityCount": 0,
+      "principalOutflow": 0,
+      "periodicInterestOutflow": 0,
+      "maturityInterestOutflow": 0,
+      "totalOutflow": 0
+    },
+    {
+      "periodLabel": "08/2026",
+      "periodStart": "2026-08-01T00:00:00",
+      "periodEnd": "2026-08-31T00:00:00",
+      "maturityCount": 0,
+      "principalOutflow": 0,
+      "periodicInterestOutflow": 0,
+      "maturityInterestOutflow": 0,
+      "totalOutflow": 0
+    },
+    {
+      "periodLabel": "09/2026",
+      "periodStart": "2026-09-01T00:00:00",
+      "periodEnd": "2026-09-30T00:00:00",
+      "maturityCount": 1,
+      "principalOutflow": 100000000,
+      "periodicInterestOutflow": 0,
+      "maturityInterestOutflow": 328767,
+      "totalOutflow": 100328767
+    },
+    {
+      "periodLabel": "10/2026",
+      "periodStart": "2026-10-01T00:00:00",
+      "periodEnd": "2026-10-13T00:00:00",
+      "maturityCount": 0,
+      "principalOutflow": 0,
+      "periodicInterestOutflow": 1926246,
+      "maturityInterestOutflow": 0,
+      "totalOutflow": 1926246
+    }
+  ]
+}

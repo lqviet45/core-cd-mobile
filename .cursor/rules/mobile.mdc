@@ -4,12 +4,12 @@ alwaysApply: true
 ---
 
 ## Cấu trúc
-- Feature-first: `lib/features/<tính-năng>/{data,domain,presentation}`; hạ tầng dùng chung ở `lib/core/{network,auth,push,cache,router,ui,utils}`. Tính năng không import trực tiếp tính năng khác – dùng provider/route.
-- `lib/generated/` là client sinh từ OpenAPI: không sửa tay, không commit. Bọc client sinh trong repository ở `data/`; UI/controller không gọi `dio` trực tiếp.
+- Feature-first: `lib/features/<tính-năng>/{data,domain,presentation}`; hạ tầng dùng chung ở `lib/core/{network,auth,router,ui,utils,...}` (`push`, `cache` thêm ở M3). Tính năng không import trực tiếp tính năng khác – dùng provider/route.
+- DTO viết tay ở `data/` (`json_serializable`, commit cả `*.g.dart`; sinh lại bằng `tool/bootstrap.sh`). Repository ở `data/` bọc `dio`; UI/controller không gọi `dio` trực tiếp. Đổi DTO phải đối chiếu `openapi/openapi.v1.json` và làm mới fixture bằng `tool/capture_fixtures.mjs`.
 
 ## State và UI
-- Riverpod (generator). Controller (Notifier) giữ trạng thái; widget chỉ hiển thị. Trạng thái tải dữ liệu luôn có đủ 4 trường hợp: đang tải (skeleton), có dữ liệu, rỗng, lỗi (có nút thử lại + `traceId`).
-- Màu/khoảng cách/kiểu chữ lấy từ design tokens ở `core/ui`, không hard-code; hỗ trợ sáng/tối. Mọi chuỗi hiển thị bằng tiếng Việt qua `.arb`.
+- Riverpod (Provider/Notifier viết tay, không generator). Controller (Notifier) giữ trạng thái; widget chỉ hiển thị. Trạng thái tải dữ liệu luôn có đủ 4 trường hợp: đang tải (skeleton), có dữ liệu, rỗng, lỗi (có nút thử lại + `traceId`).
+- Màu/khoảng cách/kiểu chữ lấy từ design tokens ở `core/ui`, không hard-code; hỗ trợ sáng/tối. Chuỗi hiển thị bằng tiếng Việt; chưa dùng `.arb` (một ngôn ngữ) – nhãn trạng thái/loại tập trung ở `core/utils/labels.dart`.
 - Phần tương tác phải có `Semantics`/nhãn truy cập; vùng chạm ≥ 48dp.
 
 ## Dữ liệu và tiền
@@ -27,5 +27,5 @@ alwaysApply: true
 - Đăng ký token sau đăng nhập và mỗi lần FCM đổi token (`POST /api/devices`). Điều hướng theo `data.type` + id; `link` là đường dẫn web, chỉ để tham khảo.
 
 ## Chất lượng
-- `tool/check.sh` phải xanh trước khi đẩy mã. Mỗi lỗi sửa có test tái hiện. Widget quan trọng có golden test.
+- `tool/check.sh` (format + analyze + test) phải xanh trước khi đẩy mã. Mỗi lỗi sửa có test tái hiện. Test DTO dùng fixture thật; test luồng dùng `FakeAdapter` (`test/helpers/fake_api.dart`).
 - Không tuyên bố đã chạy/đã test mã Flutter nếu môi trường không có SDK.

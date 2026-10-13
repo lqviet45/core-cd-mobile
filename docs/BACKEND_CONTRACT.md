@@ -1,6 +1,6 @@
 # Core CD – Ứng dụng di động (Flutter)
 
-Mã Flutter nằm ở **repo riêng** (đề xuất `core-cd-mobile`, private). Tài liệu này là hợp đồng giữa hai repo: cấu trúc dự kiến, cách nói chuyện với API, và các quy tắc đã chốt trong `PLAN.md` (Đợt 2). Chưa có mã Flutter nào được dựng hay chạy thử ở đây (môi trường làm việc không có Flutter SDK).
+Mã Flutter nằm ở **repo riêng** (đề xuất `core-cd-mobile`, private). Tài liệu này là hợp đồng giữa hai repo: cấu trúc dự kiến, cách nói chuyện với API, và các quy tắc đã chốt trong `PLAN.md` (Đợt 2). Mã Flutter đã dựng ở repo `core-cd-mobile` (M0 + M1); các phần dưới đây là thiết kế ban đầu – chỗ nào khác thực tế thì **`docs/STACK.md` của repo mobile là nguồn đúng** (xem ghi chú sau mục 1).
 
 ## 1. Cấu trúc thư mục (feature-first, tách lớp theo từng tính năng)
 
@@ -32,7 +32,9 @@ core-cd-mobile/
 └── integration_test/                  # luồng chính trên emulator, trỏ vào API staging
 ```
 
-**Gợi ý thư viện** (chốt khi dựng M0): `flutter_riverpod` (+ generator), `go_router`, `dio`, `freezed`/`json_serializable`, `flutter_secure_storage`, `local_auth`, `firebase_core` + `firebase_messaging`, `drift`, `decimal`/`intl`.
+**Thực tế khi dựng M0/M1 (13/10/2026), khác thiết kế trên:** không dùng client sinh từ OpenAPI (`gen_api.sh`, `lib/generated/` đã bỏ) mà viết DTO tay bằng `json_serializable` và kiểm bằng fixture lấy từ API thật; Riverpod viết tay (không generator), không `freezed`; chưa có `flavors/`, `push/`, `cache/` (đến M3); `domain/` chưa tách riêng. Chi tiết: `docs/STACK.md` ở repo mobile.
+
+**Gợi ý thư viện ban đầu**: `flutter_riverpod` (+ generator), `go_router`, `dio`, `freezed`/`json_serializable`, `flutter_secure_storage`, `local_auth`, `firebase_core` + `firebase_messaging`, `drift`, `decimal`/`intl`.
 
 ## 2. Hợp đồng API cho mobile (đã có ở backend)
 

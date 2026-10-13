@@ -1,0 +1,38 @@
+{
+  "id": "5e518f1c-3d45-4c29-9c9b-3167cc693c56",
+  "certificateNumber": "CDS2607057C2F4992",
+  "lotId": "09874de5-43ba-44df-a53e-aa6ab0179658",
+  "lotCode": "CD260705085E2D",
+  "customerId": "946ac187-1366-4241-8f06-a6d5637cb5a1",
+  "customerName": "Khách Thử Nghiệm 293789",
+  "customerIdentityNumber": "072•••••9999",
+  "principal": 60000000,
+  "annualRate": 0.063,
+  "annualRatePercent": 6.3,
+  "termDays": 180,
+  "termName": "6 tháng - Trả hàng tháng",
+  "paymentMethod": "Monthly",
+  "paymentMethodName": "Monthly",
+  "issueDate": "2026-07-05T00:00:00Z",
+  "maturityDate": "2027-01-01T00:00:00Z",
+  "status": "Active",
+  "statusName": "Active",
+  "estimatedInterest": 1864109.589041096,
+  "totalInterestPaid": null,
+  "penaltyAmount": null,
+  "netAmountAtRedemption": null,
+  "earlyRedemptionFee": null,
+  "holdAmount": 0,
+  "redemptionDate": null,
+  "notes": null,
+  "createdAt": "2026-10-13T03:31:35.456858Z",
+  "interestPayments": [
+    {
+      "id": "591903e9-0d3c-43d1-961e-ae7f355a926e",
+      "paymentDate": "2026-10-13T00:00:00Z",
+      "amount": 321041,
+      "periodStart": "2026-07-05T00:00:00Z",
+      "periodEnd": "2026-08-05T00:00:00Z"
+    }
+  ]
+}

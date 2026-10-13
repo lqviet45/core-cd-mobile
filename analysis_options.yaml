@@ -1,0 +1,25 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - lib/generated/**
+    - '**/*.g.dart'
+    - build/**
+    - ios/**
+    - android/**
+    - web/**
+
+linter:
+  rules:
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false
+    prefer_relative_imports: true
+    always_use_package_imports: false
+    # Các lint phong cách quá ồn so với giá trị mang lại cho app này:
+    unnecessary_type_name_in_constructor: false # cú pháp dot-shorthand mới, chưa phổ biến
+    specify_nonobvious_property_types: false
+    unnecessary_underscores: false
+    always_put_required_named_parameters_first: false
+    document_ignores: false
+    sort_pub_dependencies: false
+    avoid_positional_boolean_parameters: false

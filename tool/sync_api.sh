@@ -10,4 +10,4 @@ cp "$BACKEND/openapi/openapi.v1.json" "$ROOT/openapi/openapi.v1.json"
 cp "$BACKEND/docs/MOBILE.md" "$ROOT/docs/BACKEND_CONTRACT.md"
 echo "Đã đồng bộ openapi/openapi.v1.json và docs/BACKEND_CONTRACT.md từ $BACKEND"
 git -C "$ROOT" --no-pager diff --stat -- openapi docs/BACKEND_CONTRACT.md || true
-echo "Nếu hợp đồng đổi: chạy tool/gen_api.sh để sinh lại client."
+echo "Nếu hợp đồng đổi: cập nhật DTO ở lib/features/*/data, chạy tool/bootstrap.sh và tool/capture_fixtures.mjs (làm mới fixture test)."

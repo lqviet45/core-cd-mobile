@@ -1,0 +1,18 @@
+{
+  "id": "e6f5d535-def1-4f75-9041-b7098e694425",
+  "cif": "E2E057823",
+  "customerType": "Individual",
+  "customerTypeName": "Cá nhân",
+  "fullName": "Khách Thử Nghiệm 057823",
+  "identityNumber": "070•••••9999",
+  "email": "e2e057823@example.com",
+  "phone": "0901234567",
+  "address": null,
+  "isActive": true,
+  "createdAt": "2026-10-13T02:54:17.865355Z",
+  "totalCertificates": 5,
+  "outstandingPrincipal": 210000000,
+  "businessRegistrationNumber": null,
+  "representativeName": null,
+  "representativeTitle": null
+}
