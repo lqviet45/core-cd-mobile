@@ -20,7 +20,7 @@ alwaysApply: true
 ## Xác thực và ghi dữ liệu
 - Không gửi `X-Auth-Mode: cookie` (đó là chế độ web). Refresh token ở secure storage; refresh **single-flight**; 401 → refresh một lần rồi thử lại; refresh thất bại → đăng xuất.
 - Đăng xuất: huỷ đăng ký thiết bị (`/api/devices/unregister`) trước, rồi `/api/auth/logout`.
-- Thao tác tiền: **sinh trắc ngay trước khi gửi**, xem trước (preview) → xác nhận, `Idempotency-Key` sinh một lần khi mở form và giữ khi thử lại. Thao tác hàng loạt gửi kèm tổng kỳ vọng.
+- Thao tác tiền: luôn qua `runMoneyAction`/`MoneyGate` (không tự gọi repository ghi trực tiếp từ UI). **Sinh trắc ngay trước khi gửi**, xem trước (preview) → xác nhận, `Idempotency-Key` sinh một lần khi mở form và giữ khi thử lại. Thao tác hàng loạt gửi kèm tổng kỳ vọng.
 - Offline chỉ đọc: khoá nút ghi và hiện dải "đang offline"; không xếp hàng lệnh ghi.
 
 ## Push

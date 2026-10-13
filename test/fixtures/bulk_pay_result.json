@@ -1,0 +1,22 @@
+{
+  "succeededCount": 1,
+  "skippedCount": 0,
+  "failedCount": 1,
+  "totalAmount": 744000,
+  "items": [
+    {
+      "certificateId": "b7c8c370-a89b-4c09-a9a6-33a84e907355",
+      "certificateNumber": "CDS26073057CA62B3",
+      "status": "Failed",
+      "amount": 0,
+      "reason": "Kỳ lãi không khớp lịch chi của CCTG."
+    },
+    {
+      "certificateId": "b7c8c370-a89b-4c09-a9a6-33a84e907355",
+      "certificateNumber": "CDS26073057CA62B3",
+      "status": "Paid",
+      "amount": 744000,
+      "reason": null
+    }
+  ]
+}

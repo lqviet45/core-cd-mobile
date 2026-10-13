@@ -1,0 +1,14 @@
+{
+  "certificateNumber": "CDS26073021D59A2F",
+  "principal": 80000000,
+  "actualDays": 75,
+  "demandRate": 0.001,
+  "interestEarned": 16438,
+  "penaltyAmount": 5823562,
+  "netAmount": 79520438,
+  "redemptionDate": "2026-10-13T00:00:00",
+  "fee": 0,
+  "feeEnabled": false,
+  "feeRate": 0.0005,
+  "feeWindowDays": 180
+}

@@ -90,3 +90,22 @@ InterestSchedule _$InterestScheduleFromJson(Map<String, dynamic> json) =>
           .map((e) => InterestPeriod.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
+
+EarlyRedemptionPreview _$EarlyRedemptionPreviewFromJson(
+  Map<String, dynamic> json,
+) => EarlyRedemptionPreview(
+  certificateNumber: json['certificateNumber'] as String,
+  principal: const DecimalConverter().fromJson(json['principal']),
+  actualDays: (json['actualDays'] as num).toInt(),
+  demandRate: const DecimalConverter().fromJson(json['demandRate']),
+  interestEarned: const DecimalConverter().fromJson(json['interestEarned']),
+  penaltyAmount: const DecimalConverter().fromJson(json['penaltyAmount']),
+  netAmount: const DecimalConverter().fromJson(json['netAmount']),
+  redemptionDate: const UtcDateConverter().fromJson(
+    json['redemptionDate'] as String,
+  ),
+  fee: const DecimalConverter().fromJson(json['fee']),
+  feeEnabled: json['feeEnabled'] as bool,
+  feeRate: const DecimalConverter().fromJson(json['feeRate']),
+  feeWindowDays: (json['feeWindowDays'] as num).toInt(),
+);

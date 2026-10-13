@@ -19,7 +19,14 @@ class Transaction {
     required this.amount,
     required this.status,
     required this.createdAt,
+    this.fundTransferStatus = 'Pending',
+    this.cdTransferStatus = 'Pending',
     this.errorDescription,
+    this.updatedAt,
+    this.createdBy,
+    this.retryOfTransactionId,
+    this.retriedByTransactionId,
+    this.contractCode,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -33,7 +40,24 @@ class Transaction {
   final Decimal amount;
   final String status;
   final DateTime createdAt;
+  @JsonKey(defaultValue: 'Pending')
+  final String fundTransferStatus;
+  @JsonKey(defaultValue: 'Pending')
+  final String cdTransferStatus;
   final String? errorDescription;
+  final DateTime? updatedAt;
+  final String? createdBy;
+
+  /// Lệnh này là bản tạo lại của giao dịch nào / giao dịch thất bại này đã được tạo lại thành lệnh nào.
+  final String? retryOfTransactionId;
+  final String? retriedByTransactionId;
+  final String? contractCode;
+
+  bool get isTerminal =>
+      status == 'Success' ||
+      status == 'Failed' ||
+      status == 'Cancelled' ||
+      status == 'PartialSuccess';
 }
 
 @JsonSerializable(createToJson: false)

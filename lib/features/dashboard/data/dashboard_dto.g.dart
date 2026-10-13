@@ -15,8 +15,23 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
   amount: const DecimalConverter().fromJson(json['amount']),
   status: json['status'] as String,
   createdAt: const UtcDateConverter().fromJson(json['createdAt'] as String),
+  fundTransferStatus: json['fundTransferStatus'] as String? ?? 'Pending',
+  cdTransferStatus: json['cdTransferStatus'] as String? ?? 'Pending',
   errorDescription: json['errorDescription'] as String?,
+  updatedAt: _$JsonConverterFromJson<String, DateTime>(
+    json['updatedAt'],
+    const UtcDateConverter().fromJson,
+  ),
+  createdBy: json['createdBy'] as String?,
+  retryOfTransactionId: json['retryOfTransactionId'] as String?,
+  retriedByTransactionId: json['retriedByTransactionId'] as String?,
+  contractCode: json['contractCode'] as String?,
 );
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
 
 StatusCount _$StatusCountFromJson(Map<String, dynamic> json) => StatusCount(
   status: json['status'] as String,

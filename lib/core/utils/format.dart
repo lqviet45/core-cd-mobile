@@ -61,3 +61,16 @@ String formatDaysFrom(DateTime date, DateTime today) {
   if (days == 0) return 'hôm nay';
   return days > 0 ? 'còn $days ngày' : 'quá ${-days} ngày';
 }
+
+/// `yyyy-MM-dd` theo thành phần UTC (ngày nghiệp vụ) để gửi lên API.
+String formatIsoDate(DateTime d) {
+  final u = d.toUtc();
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${u.year.toString().padLeft(4, '0')}-${two(u.month)}-${two(u.day)}';
+}
+
+/// Ngày hôm nay (lịch của máy) dưới dạng ngày nghiệp vụ UTC 00:00.
+DateTime todayBusinessDate([DateTime? now]) {
+  final n = now ?? DateTime.now();
+  return DateTime.utc(n.year, n.month, n.day);
+}

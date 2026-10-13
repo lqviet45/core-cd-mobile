@@ -8,11 +8,16 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/startup_screens.dart';
 import '../../features/certificates/presentation/certificate_screens.dart';
 import '../../features/customers/presentation/customer_screens.dart';
+import '../../features/customers/presentation/new_customer_screen.dart';
 import '../../features/dashboard/presentation/home_screen.dart';
+import '../../features/interest/presentation/interest_screen.dart';
 import '../../features/lots/presentation/lot_screens.dart';
 import '../../features/more/presentation/more_screens.dart';
 import '../../features/notifications/presentation/notification_screens.dart';
 import '../../features/reports/presentation/report_screens.dart';
+import '../../features/trading/presentation/buy_screens.dart';
+import '../../features/trading/presentation/sell_screen.dart';
+import '../../features/transactions/presentation/transaction_detail_screen.dart';
 import '../../features/transactions/presentation/transaction_screens.dart';
 import '../auth/app_lock.dart';
 import '../auth/providers.dart';
@@ -63,6 +68,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/notifications',
         builder: (_, __) => const NotificationsScreen(),
       ),
+      GoRoute(
+        path: '/trade/buy',
+        builder: (_, s) => BuyLotScreen(
+          customerId: s.uri.queryParameters['customerId'],
+          lotId: s.uri.queryParameters['lotId'],
+        ),
+        routes: [
+          GoRoute(path: 'amount', builder: (_, __) => const BuyAmountScreen()),
+          GoRoute(path: 'review', builder: (_, __) => const BuyReviewScreen()),
+        ],
+      ),
+      GoRoute(
+        path: '/trade/sell',
+        builder: (_, s) =>
+            SellScreen(customerId: s.uri.queryParameters['customerId']),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
@@ -91,6 +112,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/transactions',
                 builder: (_, __) => const TransactionListScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (_, s) =>
+                        TransactionDetailScreen(id: s.pathParameters['id']!),
+                  ),
+                ],
               ),
             ],
           ),
@@ -100,6 +128,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: '/customers',
                 builder: (_, __) => const CustomerListScreen(),
                 routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (_, __) => const NewCustomerScreen(),
+                  ),
                   GoRoute(
                     path: ':id',
                     builder: (_, s) =>
@@ -125,6 +157,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                             LotDetailScreen(id: s.pathParameters['id']!),
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: 'interest',
+                    builder: (_, __) => const InterestScreen(),
                   ),
                   GoRoute(
                     path: 'maturities',

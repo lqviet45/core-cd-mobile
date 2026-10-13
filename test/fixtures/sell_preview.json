@@ -1,0 +1,27 @@
+{
+  "eligibleCount": 1,
+  "eligibleTotalPrincipal": 80000000,
+  "items": [
+    {
+      "certificateId": "16d060e4-dafb-4629-b031-1a3640e76a51",
+      "certificateNumber": "CDS26073021D59A2F",
+      "maturityDate": "2027-07-30T00:00:00Z",
+      "principal": 80000000,
+      "redemptionType": "Early",
+      "interest": 16438,
+      "interestAlreadyPaid": 496000,
+      "lostInterest": 5823562,
+      "netAmount": 79520438,
+      "fee": 0
+    }
+  ],
+  "totalPrincipal": 80000000,
+  "totalInterest": 16438,
+  "totalInterestAlreadyPaid": 496000,
+  "totalLostInterest": 5823562,
+  "totalFee": 0,
+  "totalNetAmount": 79520438,
+  "earlyCount": 1,
+  "issues": [],
+  "canSubmit": true
+}

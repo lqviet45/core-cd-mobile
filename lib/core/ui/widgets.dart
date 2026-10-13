@@ -795,3 +795,103 @@ class ListSkeleton extends StatelessWidget {
     );
   }
 }
+
+/// Thanh hành động cố định ở đáy màn hình (`.m-bar`).
+class BottomBar extends StatelessWidget {
+  const BottomBar({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: context.scheme.surfaceContainer,
+    child: SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: child,
+      ),
+    ),
+  );
+}
+
+/// Thẻ cảnh báo/ghi chú trong màn hình ghi (`.m-card.w` / `.m-card.pc`).
+class NoteCard extends StatelessWidget {
+  const NoteCard({
+    super.key,
+    required this.text,
+    this.icon = LucideIcons.info,
+    this.kind = CardKind.warn,
+  });
+  final Widget text;
+  final IconData icon;
+  final CardKind kind;
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = AppCard.onColor(context, kind);
+    return AppCard(
+      kind: kind,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: fg),
+          const SizedBox(width: 10),
+          Expanded(
+            child: DefaultTextStyle.merge(
+              style: context.text.bodyMedium?.copyWith(color: fg),
+              child: text,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Dòng "nhãn … giá trị" trong bảng tóm tắt số liệu (`.m-card` nền sc-hi).
+class SummaryCard extends StatelessWidget {
+  const SummaryCard({super.key, required this.rows, this.total});
+  final List<(String, String)> rows;
+  final (String, String)? total;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.scheme;
+    return AppCard(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        children: [
+          for (final (l, v) in rows)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l,
+                      style: context.text.bodyMedium?.copyWith(
+                        color: s.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  Text(v, style: context.text.bodyMedium),
+                ],
+              ),
+            ),
+          if (total != null) ...[
+            Divider(color: s.outlineVariant),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(total!.$1, style: context.text.titleMedium),
+                ),
+                Text(total!.$2, style: context.text.titleLarge),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

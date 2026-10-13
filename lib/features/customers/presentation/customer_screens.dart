@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/api_providers.dart';
 import '../../../core/models/paged.dart';
+import '../../../core/money/money_gate.dart';
 import '../../../core/paging/paged_notifier.dart';
 import '../../../core/ui/paged_list.dart';
 import '../../../core/ui/theme.dart';
@@ -99,7 +100,17 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
     return Scaffold(
       body: Column(
         children: [
-          const BigHeader('Khách hàng'),
+          BigHeader(
+            'Khách hàng',
+            actions: [
+              if (ref.watch(canWriteProvider))
+                IconBtn(
+                  icon: LucideIcons.userPlus,
+                  label: 'Thêm khách hàng',
+                  onPressed: () => context.push('/customers/new'),
+                ),
+            ],
+          ),
           SearchField(hint: 'Tên, CIF, CCCD/MST, SĐT', onChanged: _onSearch),
           FilterChipsRow<String>(
             options: const [
@@ -249,6 +260,30 @@ class CustomerDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              if (ref.watch(canWriteProvider) && c.isActive) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: () =>
+                            context.push('/trade/buy?customerId=${c.id}'),
+                        icon: const Icon(LucideIcons.download, size: 18),
+                        label: const Text('Mua CCTG'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () =>
+                            context.push('/trade/sell?customerId=${c.id}'),
+                        icon: const Icon(LucideIcons.upload, size: 18),
+                        label: const Text('Bán / Tất toán'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               const SectionHeader('Thông tin'),
               const SizedBox(height: 8),
               ListGroup(
