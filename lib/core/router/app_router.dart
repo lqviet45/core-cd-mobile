@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../features/admin/presentation/audit_screen.dart';
+import '../../features/admin/presentation/rates_screen.dart';
+import '../../features/admin/presentation/users_screen.dart';
 import '../../features/auth/presentation/lock_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/startup_screens.dart';
@@ -14,6 +17,7 @@ import '../../features/interest/presentation/interest_screen.dart';
 import '../../features/lots/presentation/lot_screens.dart';
 import '../../features/more/presentation/change_password_screen.dart';
 import '../../features/more/presentation/more_screens.dart';
+import '../../features/more/presentation/pin_setup_screen.dart';
 import '../../features/notifications/presentation/notification_screens.dart';
 import '../../features/reports/presentation/report_screens.dart';
 import '../../features/search/presentation/search_screen.dart';
@@ -174,6 +178,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, __) => const ReportsScreen(),
                   ),
                   GoRoute(
+                    path: 'rates',
+                    builder: (_, __) => const RatesScreen(),
+                  ),
+                  GoRoute(
+                    path: 'admin/users',
+                    builder: (_, __) => const UsersScreen(),
+                  ),
+                  GoRoute(
+                    path: 'admin/audit',
+                    builder: (_, __) => const AuditScreen(),
+                  ),
+                  GoRoute(
                     path: 'status',
                     builder: (_, __) => const StatusScreen(),
                   ),
@@ -181,6 +197,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'account',
                     builder: (_, __) => const AccountScreen(),
                     routes: [
+                      GoRoute(
+                        path: 'pin',
+                        builder: (_, s) => PinSetupScreen(
+                          remove: s.uri.queryParameters['remove'] == '1',
+                        ),
+                      ),
                       GoRoute(
                         path: 'password',
                         builder: (_, __) => const ChangePasswordScreen(),

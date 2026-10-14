@@ -1,6 +1,7 @@
 import 'package:core_cd_mobile/app.dart';
 import 'package:core_cd_mobile/core/auth/auth_api.dart';
 import 'package:core_cd_mobile/core/auth/biometric.dart';
+import 'package:core_cd_mobile/core/auth/pin_service.dart';
 import 'package:core_cd_mobile/core/auth/providers.dart';
 import 'package:core_cd_mobile/core/auth/token_store.dart';
 import 'package:core_cd_mobile/core/config/app_config.dart';
@@ -74,6 +75,7 @@ Future<_FakeBiometric> _pump(
         tokenStoreProvider.overrideWithValue(store),
         biometricProvider.overrideWithValue(biometric),
         sharedPrefsProvider.overrideWithValue(prefs),
+        pinStorageProvider.overrideWithValue(InMemoryPinStorage()),
         authApiProvider.overrideWithValue(
           AuthApi(fakeDio(adapter), deviceName: 'test'),
         ),

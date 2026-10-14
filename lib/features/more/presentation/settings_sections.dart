@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../core/auth/pin_providers.dart';
+import '../../../core/auth/pin_service.dart' show pinLength;
 import '../../../core/auth/providers.dart';
 import '../../../core/network/api_call.dart';
 import '../../../core/network/api_exception.dart';
@@ -112,6 +114,7 @@ class SecuritySettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(appPrefsProvider);
     final notifier = ref.read(appPrefsProvider.notifier);
+    final pinOn = ref.watch(pinEnabledProvider).value ?? false;
 
     Future<void> toggleLock(bool v) async {
       if (!v) {
@@ -154,6 +157,46 @@ class SecuritySettings extends ConsumerWidget {
                   );
                   if (v != null) await notifier.setLockAfter(v);
                 },
+        ),
+        ListRow(
+          title: 'Mã PIN',
+          subtitle: pinOn
+              ? 'Đã bật · $pinLength chữ số'
+              : 'Mở app nhanh bằng mã $pinLength số',
+          chevron: true,
+          onTap: () async {
+            if (!pinOn) {
+              await context.push('/more/account/pin');
+              return;
+            }
+            final c = await showModalBottomSheet<String>(
+              context: context,
+              showDragHandle: true,
+              builder: (sheet) => SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(LucideIcons.keyRound),
+                      title: const Text('Đổi mã PIN'),
+                      onTap: () => Navigator.pop(sheet, 'change'),
+                    ),
+                    ListTile(
+                      leading: const Icon(LucideIcons.ban),
+                      title: const Text('Tắt mã PIN'),
+                      onTap: () => Navigator.pop(sheet, 'remove'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+            if (!context.mounted) return;
+            if (c == 'change') {
+              await context.push('/more/account/pin');
+            } else if (c == 'remove') {
+              await context.push('/more/account/pin?remove=1');
+            }
+          },
         ),
         ListRow(
           title: 'Đổi mật khẩu',

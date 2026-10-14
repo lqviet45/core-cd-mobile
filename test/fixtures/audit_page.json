@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "e4773ff3-4a68-4d05-95f9-764308ea11f9",
+      "userName": "admin",
+      "role": "Admin",
+      "action": "UpdateNotificationPreferences",
+      "payload": "{\"MutedTypes\":[]}",
+      "ipAddress": "127.0.0.1",
+      "traceId": "c45768bb4ab42afa97c67d8aee01ca40",
+      "createdAt": "2026-10-13T09:36:02.737537Z"
+    },
+    {
+      "id": "46224e05-ac5d-47e8-8634-eeb0b5d6aa36",
+      "userName": "admin",
+      "role": "Admin",
+      "action": "UpdateNotificationPreferences",
+      "payload": "{\"MutedTypes\":[1]}",
+      "ipAddress": "127.0.0.1",
+      "traceId": "9d6a4663bb51bbd84c6afaaa9b25e759",
+      "createdAt": "2026-10-13T09:36:01.184334Z"
+    },
+    {
+      "id": "0f92ce1b-3251-4c8c-b92d-281d68da91e1",
+      "userName": "admin",
+      "role": "Admin",
+      "action": "UpdateNotificationPreferences",
+      "payload": "{\"MutedTypes\":[]}",
+      "ipAddress": "127.0.0.1",
+      "traceId": "366668742df9ff33deeecd9f716eedce",
+      "createdAt": "2026-10-13T09:35:03.361581Z"
+    },
+    {
+      "id": "912d1577-1c2b-467d-aa60-7ba72ec9bde0",
+      "userName": "admin",
+      "role": "Admin",
+      "action": "UpdateNotificationPreferences",
+      "payload": "{\"MutedTypes\":[1]}",
+      "ipAddress": "127.0.0.1",
+      "traceId": "5bc41c915cd66cd2df0b7ea89e11cea7",
+      "createdAt": "2026-10-13T09:35:01.787645Z"
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 89,
+  "totalPages": 5,
+  "hasPreviousPage": false,
+  "hasNextPage": true
+}

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../settings/app_prefs.dart';
+import 'pin_service.dart';
 import 'providers.dart';
 
 /// Khoá nhanh: sau khi app ở nền quá thời gian đặt trong Cài đặt, hoặc khi mở lại app với phiên đã lưu, phải xác thực
@@ -38,7 +39,13 @@ class AppLockController extends Notifier<bool> with WidgetsBindingObserver {
     return false;
   }
 
-  Future<bool> _lockable() => ref.read(biometricProvider).isAvailable();
+  /// Khoá được khi thiết bị có sinh trắc/khoá màn hình **hoặc** tài khoản đã đặt PIN của app.
+  Future<bool> _lockable() async {
+    if (await ref.read(biometricProvider).isAvailable()) return true;
+    final auth = ref.read(authControllerProvider);
+    return auth is AuthSignedIn &&
+        await ref.read(pinServiceProvider).isSet(auth.user.id);
+  }
 
   // `state` là thuộc tính của Notifier nên không đặt tên tham số theo chữ ký gốc.
   @override
@@ -62,6 +69,22 @@ class AppLockController extends Notifier<bool> with WidgetsBindingObserver {
   Future<void> _lockIfSignedIn() async {
     if (ref.read(authControllerProvider) is! AuthSignedIn) return;
     state = await _lockable();
+  }
+
+  /// Mở khoá bằng PIN của app. Sai quá số lần cho phép → PIN bị xoá và đăng xuất (phải nhập lại mật khẩu).
+  Future<PinResult> unlockWithPin(String pin) async {
+    final auth = ref.read(authControllerProvider);
+    if (auth is! AuthSignedIn) return const PinLockedOut();
+    final r = await ref.read(pinServiceProvider).verify(auth.user.id, pin);
+    switch (r) {
+      case PinOk():
+        state = false;
+      case PinLockedOut():
+        await ref.read(authControllerProvider.notifier).logout();
+      case PinWrong():
+        break;
+    }
+    return r;
   }
 
   /// Hiển thị hộp thoại sinh trắc; thành công thì mở khoá.
