@@ -1,0 +1,3 @@
+tags:
+  live:
+    # Cần backend thật đang chạy; mặc định bị bỏ qua (xem test/live/customer_live_test.dart).

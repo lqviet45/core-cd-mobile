@@ -9,21 +9,24 @@ abstract interface class TokenStore {
 
 /// Keychain (iOS) / EncryptedSharedPreferences (Android) qua `flutter_secure_storage`.
 class SecureTokenStore implements TokenStore {
-  SecureTokenStore([FlutterSecureStorage? storage])
-    : _storage = storage ?? const FlutterSecureStorage();
+  SecureTokenStore({
+    FlutterSecureStorage? storage,
+    this.key = 'core_cd.refresh_token',
+  }) : _storage = storage ?? const FlutterSecureStorage();
 
-  static const _key = 'core_cd.refresh_token';
+  /// App khách hàng dùng khoá riêng để không bao giờ đọc nhầm token của app nhân viên (và ngược lại).
+  final String key;
   final FlutterSecureStorage _storage;
 
   @override
-  Future<String?> readRefreshToken() => _storage.read(key: _key);
+  Future<String?> readRefreshToken() => _storage.read(key: key);
 
   @override
   Future<void> saveRefreshToken(String token) =>
-      _storage.write(key: _key, value: token);
+      _storage.write(key: key, value: token);
 
   @override
-  Future<void> clear() => _storage.delete(key: _key);
+  Future<void> clear() => _storage.delete(key: key);
 }
 
 /// Dùng cho test.
