@@ -1,6 +1,6 @@
 # Tech stack
 
-> App này là **app nhân viên** (Viewer/Operator/Admin). App khách hàng là giai đoạn sau, chưa có thiết kế/backend.
+> Repo có **hai app**: app nhân viên (`lib/main.dart`) và app khách hàng chỉ-xem (`lib/main_customer.dart`, `lib/features/customer_app`). App khách dùng lại lõi (`core/network`, `core/auth/SessionManager` + `AuthInterceptor`, `core/ui`, `core/utils`) nhưng có **hạ tầng riêng**: `CustomerAuthApi` (OTP, `/api/customer/auth/*`), kho token khoá riêng (`core_cd_customer.refresh_token`), Dio riêng không cache đọc và không push. Tính năng khách không import tính năng nhân viên. `AuthApi.dio/post` là `@protected` để `CustomerAuthApi` kế thừa; `SessionManager.signIn(tokens)` nhận token sau OTP.
 
 Cập nhật 13/10/2026 theo mã thực tế (M0–M3). Phiên bản: `pubspec.yaml` / `pubspec.lock` là nguồn sự thật. Flutter stable 3.47 (Dart 3.13), Material 3, Android minSdk theo mặc định Flutter, iOS 15+.
 

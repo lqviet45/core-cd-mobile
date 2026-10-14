@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show protected;
 
 import '../network/api_exception.dart';
 import 'auth_models.dart';
@@ -8,24 +9,26 @@ import 'auth_models.dart';
 ///
 /// Mobile **không** gửi `X-Auth-Mode: cookie`: refresh token trả trong body.
 class AuthApi {
-  AuthApi(this._dio, {required this.deviceName});
+  AuthApi(this.dio, {required this.deviceName});
 
-  final Dio _dio;
+  /// Cho lớp con (app khách hàng dùng đường dẫn khác nhưng cùng cách gọi/ánh xạ lỗi).
+  @protected
+  final Dio dio;
   final String deviceName;
 
-  Future<AuthTokens> login(String username, String password) => _post(
+  Future<AuthTokens> login(String username, String password) => post(
     '/api/auth/login',
     {'username': username, 'password': password, 'deviceName': deviceName},
   );
 
-  Future<AuthTokens> refresh(String refreshToken) => _post(
-    '/api/auth/refresh',
-    {'refreshToken': refreshToken, 'deviceName': deviceName},
-  );
+  Future<AuthTokens> refresh(String refreshToken) => post('/api/auth/refresh', {
+    'refreshToken': refreshToken,
+    'deviceName': deviceName,
+  });
 
   Future<void> logout(String refreshToken) async {
     try {
-      await _dio.post<void>(
+      await dio.post<void>(
         '/api/auth/logout',
         data: {'refreshToken': refreshToken},
       );
@@ -34,9 +37,10 @@ class AuthApi {
     }
   }
 
-  Future<AuthTokens> _post(String path, Map<String, Object?> body) async {
+  @protected
+  Future<AuthTokens> post(String path, Map<String, Object?> body) async {
     try {
-      final res = await _dio.post<Map<String, dynamic>>(path, data: body);
+      final res = await dio.post<Map<String, dynamic>>(path, data: body);
       return AuthTokens.fromJson(res.data!);
     } on DioException catch (e) {
       throw ApiException.fromDio(e);

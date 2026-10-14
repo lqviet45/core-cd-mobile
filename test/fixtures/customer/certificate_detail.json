@@ -1,0 +1,17 @@
+{
+  "id": "f93986c6-a303-42e5-9a1c-a7e72b6ffd74",
+  "certificateNumber": "CDS2610146B529F9F",
+  "principal": 200000000,
+  "annualRatePercent": 7.3,
+  "termDays": 400,
+  "termName": "12 tháng - Trả hàng tháng",
+  "paymentMethod": "Monthly",
+  "issueDate": "2026-10-14T00:00:00Z",
+  "maturityDate": "2027-11-18T00:00:00Z",
+  "status": "Active",
+  "estimatedInterest": 16000000,
+  "totalInterestPaid": 0,
+  "redemptionDate": null,
+  "netAmountAtRedemption": null,
+  "interestPayments": []
+}

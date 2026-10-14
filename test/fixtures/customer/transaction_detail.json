@@ -1,0 +1,11 @@
+{
+  "id": "01a7fcde-8539-4675-9927-a3cce286e1a1",
+  "trxNo": "TRX20261014043901D0CEC7",
+  "type": "BuySecondary",
+  "amount": 20000000,
+  "status": "Pending",
+  "createdAt": "2026-10-14T04:39:01.591351Z",
+  "updatedAt": null,
+  "contractCode": null,
+  "hasContract": false
+}

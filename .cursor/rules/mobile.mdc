@@ -31,3 +31,8 @@ alwaysApply: true
 ## Chất lượng
 - `tool/check.sh` (format + analyze + test) phải xanh trước khi đẩy mã. Mỗi lỗi sửa có test tái hiện. Test DTO dùng fixture thật; test luồng dùng `FakeAdapter` (`test/helpers/fake_api.dart`).
 - Không tuyên bố đã chạy/đã test mã Flutter nếu môi trường không có SDK.
+
+## App khách hàng (`lib/features/customer_app`)
+- Chỉ đọc, chỉ dữ liệu của chính khách (máy chủ lấy từ token). Không bao giờ gửi `customerId` do client chọn; không import tính năng nhân viên; không dùng `dioProvider`/`authControllerProvider` của app nhân viên (dùng `cust*Provider`).
+- Token khách ở kho khoá riêng; không cache đọc, không push (chưa làm). Link tài liệu là bí mật ngắn hạn: không log/lưu.
+- Đổi API `/api/customer/*` → làm ở backend, `tool/sync_api.sh`, làm mới fixture bằng `tool/capture_customer_fixtures.mjs`.
