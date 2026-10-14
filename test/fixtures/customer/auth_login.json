@@ -1,0 +1,17 @@
+{
+  "accessToken": "ACCESS_TOKEN",
+  "accessTokenExpiresAt": "2026-10-14T09:37:28.7692243Z",
+  "refreshToken": "REFRESH_TOKEN",
+  "refreshTokenExpiresAt": "2026-11-13T09:22:28.7695048Z",
+  "mustChangePassword": false,
+  "customer": {
+    "id": "3314299f-1042-4842-a99e-f5d4d042927d",
+    "cif": "K735351",
+    "fullName": "Nguyễn Thị Lan",
+    "customerType": "Individual",
+    "identityNumberMasked": "079•••••3511",
+    "emailMasked": "t••••••@example.com",
+    "phoneMasked": "090•••••67",
+    "address": "12 Lê Lợi, Quận 1, TP.HCM"
+  }
+}

@@ -1,9 +1,10 @@
 {
-  "holdingCount": 2,
-  "totalPrincipal": 300000000,
-  "estimatedInterestTotal": 24219178.08219178,
+  "holdingCount": 3,
+  "closedCount": 1,
+  "totalPrincipal": 330000000,
+  "estimatedInterestTotal": 18263014,
   "interestReceivedTotal": 0,
-  "nextMaturityDate": "2027-11-18T00:00:00Z",
-  "nextMaturityCertificateId": "f93986c6-a303-42e5-9a1c-a7e72b6ffd74",
-  "nextMaturityCertificateNumber": "CDS2610146B529F9F"
+  "nextMaturityDate": "2026-10-17T00:00:00Z",
+  "nextMaturityCertificateId": "10019355-9f70-4fc1-9af1-f259a43d7d54",
+  "nextMaturityCertificateNumber": "CDS2609170E157D38"
 }

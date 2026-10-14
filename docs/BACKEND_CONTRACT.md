@@ -72,41 +72,42 @@ core-cd-mobile/
 
 ## 5. App khách hàng (`/api/customer/*`)
 
-**Phạm vi hiện tại: chỉ đọc.** Khách xem hồ sơ, tổng quan, CCTG đang giữ/đã đóng, lịch nhận lãi, lịch sử giao dịch, tải hợp đồng/chứng chỉ. Chưa có mua/bán/tất toán, thông báo và push cho khách (thông báo hiện là nội bộ cho nhân viên) — làm ở giai đoạn sau.
+**Phạm vi hiện tại: chỉ đọc.** Khách xem hồ sơ, tổng quan, CCTG đang gửi/đã tất toán, lịch nhận tiền, lịch sử giao dịch, tải hợp đồng/chứng chỉ. Chưa có mua/tất toán từ app (màn K10–K15 của thiết kế), thông báo + push cho khách (thông báo hiện là nội bộ cho nhân viên) — làm ở giai đoạn sau.
 
-### Cấp quyền (nhân viên)
-Khách chỉ đăng nhập được khi **nhân viên đã xác minh khách trực tiếp** rồi bật quyền:
+### Cấp quyền và mật khẩu (nhân viên)
+Khách chỉ đăng nhập được khi **nhân viên đã xác minh khách trực tiếp** rồi bật quyền và **đưa mật khẩu tạm** (chưa có kênh SMS):
 
 | Việc | API (Operator/Admin) |
 |---|---|
-| Xem trạng thái | `GET /api/customers/{id}/app-access` → `{enabled, phoneMasked, lastLoginAt, enabledAt}` |
-| Bật / cấp lại / đổi số | `PUT /api/customers/{id}/app-access` `{phone?}` (bỏ trống = số trong hồ sơ). Đổi số ⇒ mọi phiên cũ bị thu hồi. 409 nếu số đã thuộc khách khác; 422 nếu không phải số di động VN |
+| Xem trạng thái | `GET /api/customers/{id}/app-access` → `{enabled, phoneMasked, lastLoginAt, enabledAt, hasPassword}` |
+| Bật / cấp lại quyền / đổi số | `PUT /api/customers/{id}/app-access` `{phone?}` (bỏ trống = số trong hồ sơ). Lần đầu trả `temporaryPassword` **một lần duy nhất** (không lấy lại được; phản hồi `no-store`). Đổi số ⇒ mọi phiên cũ bị thu hồi, mật khẩu giữ nguyên. 409 nếu số đã thuộc khách khác; 422 nếu không phải số di động VN |
+| Cấp lại mật khẩu (khách quên) | `POST /api/customers/{id}/app-access/reset-password` → `temporaryPassword` mới; mọi phiên bị thu hồi; 422 nếu chưa bật quyền |
 | Thu hồi | `DELETE /api/customers/{id}/app-access` ⇒ khoá ngay (access token còn hạn cũng vô hiệu vì mỗi request đọc lại DB) và thu hồi mọi refresh token |
 
-### Đăng nhập OTP (ẩn danh, giới hạn 10 request/phút/IP)
+### Đăng nhập (ẩn danh, giới hạn 10 request/phút/IP)
 | Bước | API |
 |---|---|
-| Xin mã | `POST /api/customer/auth/otp/request {phone}` → `{expiresInSeconds, resendAfterSeconds}`. **Luôn trả cùng kết quả** dù số có tài khoản hay không (không lộ ai là khách). Chỉ tài khoản đang bật mới được gửi SMS; ≥ 60 giây giữa hai mã, tối đa 5 mã/giờ/số; mã mới thay mã cũ. `phone` nhận `09…`, `+849…`, `849…` |
-| Xác thực | `POST /api/customer/auth/otp/verify {phone, code, deviceName?}` → `{accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, customer}`. Mã 6 số, hiệu lực 5 phút, dùng một lần, sai 5 lần thì huỷ mã. Mọi lỗi đều 401 "Mã OTP không đúng hoặc đã hết hạn." |
+| Đăng nhập | `POST /api/customer/auth/login {identifier, password, deviceName?}` — `identifier` là **số điện thoại** (`09…`, `+849…`, `849…`) **hoặc mã khách hàng (CIF)**, không phân biệt hoa thường. Trả `{accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, mustChangePassword, customer}`. Mọi lỗi đều 401 cùng một thông điệp; 5 lần sai khoá 15 phút |
+| Đổi mật khẩu | `POST /api/customer/auth/change-password {currentPassword, newPassword, deviceName?}` (Bearer khách). **Bắt buộc ở lần đầu**: khi `mustChangePassword = true` mọi API khác trả **403** cho tới khi đổi. Mật khẩu mới ≥ 10 ký tự, có hoa/thường/số, khác mật khẩu cũ. Thu hồi mọi phiên cũ và trả **phiên mới** (cùng dạng kết quả đăng nhập) |
 | Làm mới | `POST /api/customer/auth/refresh {refreshToken, deviceName?}` — xoay vòng, **single-flight** như app nhân viên; dùng lại token đã xoay ⇒ thu hồi mọi phiên. Refresh token sống 30 ngày |
 | Đăng xuất | `POST /api/customer/auth/logout {refreshToken}` (204, idempotent) |
 
-Token khách: role `Customer`, claim `acct` = id tài khoản; **không** dùng được ở `/api/*` của nhân viên (403) và `/api/auth/refresh` của nhân viên không nhận refresh token khách.
+Token khách: role `Customer`, claim `acct` = id tài khoản; **không** dùng được ở `/api/*` của nhân viên (403) và `/api/auth/refresh` của nhân viên không nhận refresh token khách. Sinh trắc/PIN mở app là việc phía thiết bị (không có API).
 
 ### Dữ liệu (Bearer token khách; mọi response `Cache-Control: no-store`)
 | Việc | API |
 |---|---|
-| Hồ sơ | `GET /api/customer/me` (CCCD/MST và số điện thoại đã che) |
-| Tổng quan | `GET /api/customer/summary` → số CCTG đang giữ, tổng gốc, lãi dự kiến, lãi đã nhận, kỳ đáo hạn gần nhất |
-| CCTG | `GET /api/customer/certificates?scope=All\|Holding\|Closed&pageNumber&pageSize`, `GET /api/customer/certificates/{id}` |
+| Hồ sơ | `GET /api/customer/me` (CCCD/MST, số điện thoại, email đều đã che) |
+| Tổng quan | `GET /api/customer/summary` → `holdingCount, closedCount, totalPrincipal, estimatedInterestTotal, interestReceivedTotal, nextMaturity*` |
+| CCTG | `GET /api/customer/certificates?scope=All\|Holding\|Closed\|Active\|NearMaturity&pageNumber&pageSize` (`NearMaturity` gồm cả đã đến hạn chưa tất toán), `GET /api/customer/certificates/{id}` |
 | Lịch lãi | `GET /api/customer/certificates/{id}/interest-schedule` — trạng thái kỳ chỉ có `Paid · Upcoming · Due` |
-| Giao dịch | `GET /api/customer/transactions?type&status&pageNumber&pageSize`, `GET /api/customer/transactions/{id}` (không có kênh, người thao tác, lỗi nội bộ) |
+| **Lịch nhận tiền** | `GET /api/customer/upcoming?days=30` (1–366) → `{days, totalAmount, items[{date, kind: Interest\|Maturity, certificateId, certificateNumber, termName, amount, periodIndex, periodTotal, isDue}]}` sắp theo ngày. Kỳ lãi chưa chi; khoản đáo hạn = gốc + lãi hợp đồng nếu trả lãi cuối kỳ, chỉ gốc nếu trả lãi định kỳ. `isDue`: đã đến/quá ngày mà ngân hàng chưa ghi nhận chi |
+| Giao dịch | `GET /api/customer/transactions?direction=In\|Out&type&status&pageNumber&pageSize` (`Out` = mua, `In` = tất toán/nhận lãi; không có kênh, người thao tác, lỗi nội bộ), `GET /api/customer/transactions/{id}` |
 | Tài liệu | `GET /api/customer/certificates/{id}/documents`, `GET /api/customer/transactions/{id}/documents` (chỉ hợp đồng/chứng chỉ; KYC không bao giờ lộ), `POST /api/customer/documents/{id}/download-link` → URL 5 phút, mỗi lần cấp ghi nhật ký (`CreateMyDocumentDownloadLink`) |
 
 **Cô lập dữ liệu:** khách luôn được xác định từ token; không có tham số `customerId`. Tài nguyên của người khác trả **404** như không tồn tại.
 
-### Vận hành
-- Kênh SMS chưa chọn nhà cung cấp. `Otp:Provider=Log` (chỉ Development) ghi mã vào log; mặc định `Disabled`: không gửi được, API ghi **lỗi** vào log/Sentry mỗi lần xin mã (phản hồi cho khách vẫn y hệt). Cắm nhà cung cấp thật bằng cách hiện thực `IOtpSender`.
-- OTP băm HMAC-SHA256 gắn với số điện thoại (khoá dẫn xuất từ `Jwt:Key`); không lưu mã thô.
-- Số điện thoại ngoài Việt Nam chưa hỗ trợ.
-- **Giới hạn đã biết:** phản hồi xin OTP giống hệt nhau, nhưng thời gian phản hồi của số có tài khoản dài hơn (ghi DB + gọi kênh SMS) nên kẻ tấn công đo giờ có thể suy ra số nào là khách. Giảm nhẹ bằng giới hạn 10 request/phút/IP và 5 mã/giờ/số; muốn triệt để thì gửi SMS qua hàng đợi nền. Chưa có push/thông báo cho khách, chưa có khoá app (PIN/sinh trắc) ở app khách.
+### Vận hành và giới hạn
+- **Chưa có kênh SMS/OTP** nên quên mật khẩu = đến quầy để nhân viên cấp lại (`reset-password`). Màn quản lý khách của nhân viên (web/mobile) **chưa có nút** bật quyền/cấp mật khẩu: hiện gọi trực tiếp API.
+- Mật khẩu tạm chỉ hiện một lần trong phản hồi; hệ thống chỉ lưu băm PBKDF2. Mọi lần cấp/đổi mật khẩu đều có nhật ký (tham số mật khẩu bị che).
+- Chưa có push/thông báo cho khách, chưa mua/tất toán từ app khách, số điện thoại ngoài Việt Nam chưa hỗ trợ.

@@ -1,0 +1,27 @@
+{
+  "items": [
+    {
+      "id": "69e67ba5-800e-49b9-b16d-dae4c93a0d78",
+      "certificateNumber": "CDS260914DE6D633B",
+      "principal": 50000000,
+      "annualRatePercent": 6.5,
+      "termDays": 330,
+      "termName": "6 tháng",
+      "paymentMethod": "AtMaturity",
+      "issueDate": "2026-09-14T00:00:00Z",
+      "maturityDate": "2027-08-10T00:00:00Z",
+      "status": "RedeemedEarly",
+      "estimatedInterest": 2938356,
+      "totalInterestPaid": 0,
+      "redemptionDate": "2026-10-14T00:00:00Z",
+      "netAmountAtRedemption": 50004110,
+      "interestPayments": []
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 1,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false
+}
