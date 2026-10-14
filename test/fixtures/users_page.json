@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "3a506624-2bb0-4e08-b48d-fefe92db979a",
+      "username": "admin",
+      "fullName": "Quản trị viên",
+      "role": "Admin",
+      "isActive": true,
+      "lastLoginAt": "2026-10-14T01:54:24.753656Z",
+      "createdAt": "2026-10-13T06:40:27.453329Z"
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 1,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false
+}

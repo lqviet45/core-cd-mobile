@@ -1,0 +1,66 @@
+{
+  "items": [
+    {
+      "id": "10205085-9abc-4ff1-96ae-0e8ca5596035",
+      "termName": "1 tháng",
+      "termDays": 30,
+      "annualRate": 0.04,
+      "annualRatePercent": 4.0,
+      "paymentMethod": "AtMaturity",
+      "paymentMethodName": "Trả cuối kỳ",
+      "isActive": true,
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": null,
+      "description": "KH gửi 1 tháng, lãi cuối kỳ",
+      "createdAt": "2026-10-13T06:40:26.650606Z"
+    },
+    {
+      "id": "e27d4466-7b7b-4c82-9df9-fd44719e830a",
+      "termName": "3 tháng",
+      "termDays": 91,
+      "annualRate": 0.055,
+      "annualRatePercent": 5.5,
+      "paymentMethod": "AtMaturity",
+      "paymentMethodName": "Trả cuối kỳ",
+      "isActive": true,
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": null,
+      "description": "KH gửi 3 tháng, lãi cuối kỳ",
+      "createdAt": "2026-10-13T06:40:26.650712Z"
+    },
+    {
+      "id": "5dfbf020-9518-40c0-b1b5-e43e5c5e6c4f",
+      "termName": "6 tháng",
+      "termDays": 182,
+      "annualRate": 0.065,
+      "annualRatePercent": 6.5,
+      "paymentMethod": "AtMaturity",
+      "paymentMethodName": "Trả cuối kỳ",
+      "isActive": true,
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": null,
+      "description": "KH gửi 6 tháng, lãi cuối kỳ",
+      "createdAt": "2026-10-13T06:40:26.650713Z"
+    },
+    {
+      "id": "c72aaf9c-fe78-4e90-b930-1d4ec8739ad6",
+      "termName": "6 tháng - Trả hàng tháng",
+      "termDays": 182,
+      "annualRate": 0.063,
+      "annualRatePercent": 6.3,
+      "paymentMethod": "Monthly",
+      "paymentMethodName": "Trả hàng tháng",
+      "isActive": true,
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": null,
+      "description": "KH gửi 6 tháng, lãi hàng tháng",
+      "createdAt": "2026-10-13T06:40:26.650714Z"
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 8,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false
+}

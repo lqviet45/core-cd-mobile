@@ -45,6 +45,10 @@ Font: Roboto mặc định của Material (chưa đóng gói font riêng).
 - **Không tự thử lại**: Riverpod 3 mặc định thử lại provider lỗi 10 lần; app tắt hẳn (`retry: noAutoRetry` ở `ProviderScope`) để lỗi hiện ngay và không gọi dồn máy chủ.
 - **Điều hướng từ route ngoài shell** (`/search`, `/notifications`): dùng `context.go`, không `push`, vì push một route của shell sẽ trùng khoá trang với shell đang có (assert ở debug).
 
+## Admin và mã PIN (bổ sung sau M3)
+- **Admin** (`features/admin`): Người dùng (`/api/users`: danh sách/tìm/lọc, tạo, sửa vai trò–trạng thái, đặt lại mật khẩu), Nhật ký thao tác (`/api/audit-logs`, chỉ đọc; payload đã được máy chủ che), Chính sách lãi suất (`/api/interest-rate-policies`: mọi vai trò xem, Admin thêm/sửa/ngừng). Mọi thao tác ghi đi qua `runMoneyAction` (sinh trắc ngay trước khi gửi). Màn Admin tự chặn khi vai trò không phải Admin và **không gọi API**. Lãi suất nhập theo %, gửi lên dạng tỷ lệ (5,5 → 0,055). Tài khoản không tự đổi vai trò/vô hiệu hoá chính mình (máy chủ còn chặn việc mất Admin cuối cùng). Sửa/ngừng chính sách đang có CCTG hoạt động sẽ bị máy chủ từ chối và app hiện đúng thông báo đó.
+- **Mã PIN 6 số** (`core/auth/pin_service.dart`, `pin_pad.dart`): theo từng tài khoản trên thiết bị, lưu **băm PBKDF2-HMAC-SHA256 (100.000 vòng) + muối** trong secure storage, không lưu PIN. Không chấp nhận PIN toàn số giống nhau hay dãy liên tiếp. Sai 5 lần (đếm bền, tắt/mở app không đếm lại) → xoá PIN và đăng xuất (phải nhập lại mật khẩu). Xoá PIN khi đăng xuất/hết phiên/đăng nhập mới. Màn khoá hiện bàn phím PIN (kèm phím vân tay nếu thiết bị có); thiết bị không có sinh trắc nhưng có PIN vẫn khoá được. **PIN chỉ mở app: thao tác tiền vẫn cần sinh trắc/mã khoá màn hình** (`MoneyGate` không đổi). Lỗi đọc secure storage coi như chưa đặt PIN.
+
 ## Chưa thêm (làm ở mốc sau)
 | Mốc | Mảng | Dự kiến |
 |---|---|---|

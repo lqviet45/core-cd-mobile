@@ -13,6 +13,7 @@ import '../push/push_registrar.dart';
 import 'auth_api.dart';
 import 'auth_models.dart';
 import 'biometric.dart';
+import 'pin_service.dart';
 import 'session_manager.dart';
 import 'token_store.dart';
 
@@ -121,11 +122,22 @@ class AuthOffline extends AuthState {
 class AuthController extends Notifier<AuthState> {
   StreamSubscription<SessionEvent>? _sub;
 
+  /// Để xoá PIN của đúng tài khoản khi đăng xuất/hết phiên (sự kiện đăng xuất không mang id).
+  String? _lastUserId;
+
   @override
   AuthState build() {
     final session = ref.watch(sessionManagerProvider);
     _sub = session.events.listen((e) {
+      final pins = ref.read(pinServiceProvider);
+      if (e is SignedIn) {
+        // Phiên mới (nhập mật khẩu): PIN cũ không còn hiệu lực, phải đặt lại.
+        _lastUserId = e.user.id;
+        unawaited(pins.clear(e.user.id).catchError((Object _) {}));
+      }
       if (e is SignedOut) {
+        final uid = _lastUserId;
+        if (uid != null) unawaited(pins.clear(uid).catchError((Object _) {}));
         // Đăng xuất/hết phiên: xoá dữ liệu đã đệm và huỷ khoá để không để lại dữ liệu của người dùng cũ.
         // Lỗi xoá bản đệm không được làm hỏng đăng xuất (khoá bị huỷ ngay cả khi xoá tệp lỗi nên dữ liệu vẫn không đọc được).
         unawaited(ref.read(cacheProvider).clear().catchError((Object _) {}));
@@ -145,6 +157,7 @@ class AuthController extends Notifier<AuthState> {
   Future<void> _restore(SessionManager session) async {
     try {
       final user = await session.restore();
+      if (user != null) _lastUserId = user.id;
       if (state is AuthRestoring || state is AuthOffline) {
         state = user == null
             ? const AuthSignedOut()

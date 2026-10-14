@@ -2,6 +2,7 @@ import 'package:core_cd_mobile/app.dart';
 import 'package:core_cd_mobile/core/auth/api_providers.dart';
 import 'package:core_cd_mobile/core/auth/auth_api.dart';
 import 'package:core_cd_mobile/core/auth/biometric.dart';
+import 'package:core_cd_mobile/core/auth/pin_service.dart';
 import 'package:core_cd_mobile/core/auth/providers.dart';
 import 'package:core_cd_mobile/core/auth/token_store.dart';
 import 'package:core_cd_mobile/core/cache/blob_store.dart';
@@ -72,7 +73,9 @@ class Harness {
     required this.opener,
     required this.picker,
     required this.prefs,
+    required this.pins,
   });
+  final InMemoryPinStorage pins;
   final FakePushTokenSource pushSource;
   final FakeOpener opener;
   final FakePicker picker;
@@ -114,8 +117,18 @@ Future<Harness> pumpSignedIn(
   Map<String, Object> prefs = const {},
   String? pushToken,
   FakeAdapter? storage,
+  String? pin,
+  bool bioPasses = true,
 }) async {
-  final bio = FakeBiometric();
+  final bio = FakeBiometric(passes: bioPasses);
+  final pins = InMemoryPinStorage();
+  final pinService = PinService(pins, iterations: 1000);
+  if (pin != null) {
+    await pinService.set(
+      (loginPayload()['user'] as Map<String, dynamic>)['id'] as String,
+      pin,
+    );
+  }
   final pushSource = FakePushTokenSource(pushToken);
   final opener = FakeOpener();
   final picker = FakePicker();
@@ -133,6 +146,8 @@ Future<Harness> pumpSignedIn(
         ),
         tokenStoreProvider.overrideWithValue(InMemoryTokenStore('REFRESH')),
         biometricProvider.overrideWithValue(bio),
+        pinStorageProvider.overrideWithValue(pins),
+        pinServiceProvider.overrideWithValue(pinService),
         sharedPrefsProvider.overrideWithValue(sp),
         cacheProvider.overrideWithValue(
           EncryptedCache(
@@ -172,5 +187,6 @@ Future<Harness> pumpSignedIn(
     opener: opener,
     picker: picker,
     prefs: sp,
+    pins: pins,
   );
 }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/admin/data/admin_repository.dart';
 import '../../features/certificates/data/certificate_repository.dart';
 import '../../features/customers/data/customer_repository.dart';
 import '../../features/dashboard/data/dashboard_repository.dart';
@@ -12,6 +13,9 @@ import '../../features/reports/data/report_repository.dart';
 import '../../features/transactions/data/transaction_repository.dart';
 import 'providers.dart';
 
+final adminRepositoryProvider = Provider(
+  (ref) => AdminRepository(ref.watch(dioProvider)),
+);
 final dashboardRepositoryProvider = Provider(
   (ref) => DashboardRepository(ref.watch(dioProvider)),
 );

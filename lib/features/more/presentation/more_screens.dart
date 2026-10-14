@@ -15,6 +15,7 @@ import '../../../core/ui/widgets.dart';
 import '../../../core/utils/format.dart';
 import '../../../core/utils/labels.dart';
 import '../../../core/utils/text.dart';
+import '../../admin/presentation/admin_common.dart';
 import '../../dashboard/presentation/providers.dart';
 import 'settings_sections.dart';
 
@@ -96,6 +97,12 @@ class MoreScreen extends ConsumerWidget {
                         onTap: () => context.push('/more/interest'),
                       ),
                     ListRow(
+                      lead: const Lead(square: true, icon: LucideIcons.percent),
+                      title: 'Chính sách lãi suất',
+                      chevron: true,
+                      onTap: () => context.push('/more/rates'),
+                    ),
+                    ListRow(
                       lead: const Lead(
                         square: true,
                         icon: LucideIcons.chartColumn,
@@ -106,6 +113,29 @@ class MoreScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                if (ref.watch(isAdminProvider)) ...[
+                  const SectionHeader('Quản trị (chỉ Admin)'),
+                  const SizedBox(height: 8),
+                  ListGroup(
+                    children: [
+                      ListRow(
+                        lead: const Lead(square: true, icon: LucideIcons.users),
+                        title: 'Người dùng',
+                        chevron: true,
+                        onTap: () => context.push('/more/admin/users'),
+                      ),
+                      ListRow(
+                        lead: const Lead(
+                          square: true,
+                          icon: LucideIcons.history,
+                        ),
+                        title: 'Nhật ký thao tác',
+                        chevron: true,
+                        onTap: () => context.push('/more/admin/audit'),
+                      ),
+                    ],
+                  ),
+                ],
                 const SectionHeader('Hệ thống'),
                 const SizedBox(height: 8),
                 ListGroup(

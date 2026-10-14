@@ -12,12 +12,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// `?nobio=1` giả lập thiết bị không có sinh trắc (để kiểm màn khoá bằng PIN).
 class _AlwaysYes implements BiometricAuthenticator {
-  @override
-  Future<bool> isAvailable() async => true;
+  final bool _none = Uri.base.queryParameters.containsKey('nobio');
 
   @override
-  Future<bool> authenticate(String reason) async => true;
+  Future<bool> isAvailable() async => !_none;
+
+  @override
+  Future<bool> authenticate(String reason) async => !_none;
 }
 
 Future<void> main() async {
