@@ -3,6 +3,9 @@ class AppConfig {
   const AppConfig({
     required this.apiBaseUrl,
     required this.envName,
+    this.supportPhone = '',
+    this.sentryDsn = '',
+    this.appVersion = '',
     this.requestTimeout = const Duration(seconds: 20),
   });
 
@@ -17,6 +20,15 @@ class AppConfig {
 
   final String apiBaseUrl;
   final String envName;
+
+  /// Số hotline hỗ trợ khách hàng (`SUPPORT_PHONE`). Rỗng = chưa cấu hình → app chỉ hiện hướng dẫn chung.
+  final String supportPhone;
+
+  /// DSN Sentry (`SENTRY_DSN`). Rỗng = tắt báo lỗi.
+  final String sentryDsn;
+
+  /// Phiên bản gắn vào báo lỗi (`APP_VERSION`), vd `1.0.0+3`.
+  final String appVersion;
   final Duration requestTimeout;
 
   bool get isProd => envName == 'prod';

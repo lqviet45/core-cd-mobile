@@ -4,7 +4,8 @@
 
 Cập nhật 13/10/2026 theo mã thực tế (M0–M3). Phiên bản: `pubspec.yaml` / `pubspec.lock` là nguồn sự thật. Flutter stable 3.47 (Dart 3.13), Material 3, Android minSdk theo mặc định Flutter, iOS 15+.
 
-Cấu hình môi trường: `--dart-define-from-file=env/<flavor>.json` (mẫu `env/*.example.json`; tệp thật không commit). Prod bắt buộc `API_BASE_URL` dùng https (`AppConfig.validate`).
+Cấu hình môi trường: `--dart-define-from-file=env/<flavor>.json` (mẫu `env/*.example.json`; tệp thật không commit). Prod bắt buộc `API_BASE_URL` dùng https (`AppConfig.validate`). Các khoá khác: `SENTRY_DSN`, `SUPPORT_PHONE` (hotline app khách), `APP_VERSION` — xem `docs/RELEASE.md`. Hai app = hai flavor `staff`/`customer` (Android `productFlavors`, iOS cấu hình/scheme cùng tên).
+Báo lỗi: `sentry_flutter` (chỉ app khách; `lib/core/telemetry/crash_reporting.dart` dựng lại sự kiện theo allowlist, không PII/ảnh chụp/request, tắt khi không có DSN).
 
 ## Đã dùng (có trong pubspec)
 | Mảng | Thư viện | Ghi chú |

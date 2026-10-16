@@ -9,4 +9,5 @@ dart run build_runner build --delete-conflicting-outputs
 echo
 echo "Xong. Chạy thử (backend ở máy host, emulator Android dùng 10.0.2.2):"
 echo "  cp env/dev.example.json env/dev.json   # sửa API_BASE_URL nếu cần"
-echo "  flutter run --dart-define-from-file=env/dev.json"
+echo "  flutter run --flavor staff -t lib/main.dart --dart-define-from-file=env/dev.json"
+echo "  flutter run --flavor customer -t lib/main_customer.dart --dart-define-from-file=env/dev.json"

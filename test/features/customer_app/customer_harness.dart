@@ -13,6 +13,7 @@ import 'package:core_cd_mobile/features/customer_app/data/customer_auth_api.dart
 import 'package:core_cd_mobile/features/customer_app/presentation/customer_app.dart';
 import 'package:core_cd_mobile/features/customer_app/presentation/customer_documents.dart';
 import 'package:core_cd_mobile/features/customer_app/presentation/customer_providers.dart';
+import 'package:core_cd_mobile/features/customer_app/presentation/customer_support.dart';
 import 'package:dio/dio.dart' show RequestOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FontLoader;
@@ -150,6 +151,8 @@ Future<CustHarness> pumpCustomer(
   Map<String, Object> prefs = const {},
   FakeBio? bio,
   Brightness brightness = Brightness.light,
+  String supportPhone = '',
+  Future<bool> Function(Uri)? launcher,
 }) async {
   final adapter = FakeAdapter(routes);
   final store = InMemoryTokenStore(storedToken);
@@ -169,7 +172,11 @@ Future<CustHarness> pumpCustomer(
       retry: noAutoRetry,
       overrides: [
         appConfigProvider.overrideWithValue(
-          const AppConfig(apiBaseUrl: 'http://fake', envName: 'dev'),
+          AppConfig(
+            apiBaseUrl: 'http://fake',
+            envName: 'dev',
+            supportPhone: supportPhone,
+          ),
         ),
         sharedPrefsProvider.overrideWithValue(sp),
         biometricProvider.overrideWithValue(biometric),
@@ -185,6 +192,8 @@ Future<CustHarness> pumpCustomer(
           return CustomerAppRepository(dio);
         }),
         custDocumentOpenerProvider.overrideWithValue(opener),
+        if (launcher != null)
+          custUrlLauncherProvider.overrideWithValue(launcher),
       ],
       child: Consumer(
         builder: (context, ref, _) {

@@ -11,6 +11,7 @@ import '../data/customer_app_dto.dart';
 import 'customer_documents.dart';
 import 'customer_labels.dart';
 import 'customer_providers.dart';
+import 'customer_support.dart';
 import 'kh_format.dart';
 import 'kh_theme.dart';
 import 'kh_widgets.dart';
@@ -236,6 +237,8 @@ class CustomerTransactionDetailScreen extends ConsumerWidget {
                         icon: LucideIcons.circleAlert,
                         amber: true,
                       ),
+                      const SizedBox(height: 10),
+                      const KhCallSupportButton(),
                     ],
                     const SizedBox(height: 20),
                     CustDocumentsSection(

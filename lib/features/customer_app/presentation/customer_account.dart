@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/auth/providers.dart';
 import '../../../core/utils/text.dart';
 import 'customer_providers.dart';
+import 'customer_support.dart';
 import 'kh_theme.dart';
 import 'kh_widgets.dart';
 
@@ -87,6 +88,12 @@ class CustomerAccountScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  if (ref.watch(custSupportPhoneProvider).isNotEmpty) ...[
+                    const SizedBox(height: 20),
+                    const KhGroupLabel('Hỗ trợ'),
+                    const SizedBox(height: 10),
+                    const KhList(children: [KhSupportRow()]),
+                  ],
                   const SizedBox(height: 20),
                   KhButton(
                     label: 'Lịch sử giao dịch',

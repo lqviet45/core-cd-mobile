@@ -7,6 +7,7 @@ import 'core/auth/providers.dart';
 import 'core/config/app_config.dart';
 import 'core/network/retry_policy.dart';
 import 'core/settings/app_prefs.dart';
+import 'core/telemetry/crash_reporting.dart';
 import 'features/customer_app/presentation/customer_app.dart';
 
 /// Điểm vào của **app khách hàng** (chỉ xem). Chạy:
@@ -18,14 +19,19 @@ Future<void> main() async {
   final config = AppConfig.fromEnvironment()..validate();
   final prefs = await SharedPreferences.getInstance();
 
-  runApp(
-    ProviderScope(
-      retry: noAutoRetry,
-      overrides: [
-        appConfigProvider.overrideWithValue(config),
-        sharedPrefsProvider.overrideWithValue(prefs),
-      ],
-      child: const CustomerApp(),
+  // Sentry (nếu có DSN) bọc cả `runApp` để bắt lỗi chưa xử lý; dữ liệu được lọc trong `crash_reporting.dart`.
+  await runWithCrashReporting(
+    config,
+    appName: 'cctg-customer',
+    run: () => runApp(
+      ProviderScope(
+        retry: noAutoRetry,
+        overrides: [
+          appConfigProvider.overrideWithValue(config),
+          sharedPrefsProvider.overrideWithValue(prefs),
+        ],
+        child: const CustomerApp(),
+      ),
     ),
   );
 }

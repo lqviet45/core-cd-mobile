@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/auth/providers.dart';
 import '../../../core/network/api_exception.dart';
 import 'customer_providers.dart';
+import 'customer_support.dart';
 import 'kh_theme.dart';
 import 'kh_widgets.dart';
 
@@ -106,6 +107,9 @@ class _State extends ConsumerState<CustomerLoginScreen> {
                   style: KhType.b.copyWith(color: k.ink2),
                 ),
                 const SizedBox(height: 20),
+                const KhCallSupportButton(kind: KhButtonKind.tonal),
+                if (ref.read(custSupportPhoneProvider).isNotEmpty)
+                  const SizedBox(height: 10),
                 KhButton(label: 'Đã hiểu', onPressed: () => Navigator.pop(ctx)),
               ],
             ),
