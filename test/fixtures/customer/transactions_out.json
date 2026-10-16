@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "id": "746d3006-2ba5-49f4-a347-fa872faf9714",
+      "trxNo": "TRX20261014092227A9EA94",
+      "type": "BuySecondary",
+      "amount": 20000000,
+      "status": "Pending",
+      "createdAt": "2026-10-14T09:22:27.577465Z",
+      "updatedAt": null,
+      "contractCode": null,
+      "hasContract": false
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 1,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false
+}

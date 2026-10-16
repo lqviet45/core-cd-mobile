@@ -1,0 +1,18 @@
+{
+  "days": 30,
+  "totalAmount": 30098630,
+  "items": [
+    {
+      "date": "2026-10-17T00:00:00Z",
+      "kind": "Maturity",
+      "certificateId": "10019355-9f70-4fc1-9af1-f259a43d7d54",
+      "certificateNumber": "CDS2609170E157D38",
+      "termName": "1 tháng",
+      "paymentMethod": "AtMaturity",
+      "amount": 30098630,
+      "periodIndex": null,
+      "periodTotal": null,
+      "isDue": false
+    }
+  ]
+}

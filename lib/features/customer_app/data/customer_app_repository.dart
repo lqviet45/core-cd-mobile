@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 import '../../../core/models/paged.dart';
 import '../../../core/network/api_call.dart';
-import '../../../core/network/api_exception.dart';
 import 'customer_app_dto.dart';
 
 /// Link tải ngắn hạn do API cấp (không log, không lưu).
@@ -27,7 +26,7 @@ class CustomerAppRepository {
     return CustomerSummary.fromJson(res.data!);
   });
 
-  /// [scope]: `All | Holding | Closed`.
+  /// [scope]: `All | Holding | Closed | Active | NearMaturity`.
   Future<Paged<CustCertificate>> certificates({
     String scope = 'All',
     int page = 1,
@@ -59,13 +58,28 @@ class CustomerAppRepository {
         return CustInterestSchedule.fromJson(res.data!);
       });
 
+  /// Lịch nhận tiền trong [days] ngày tới (1–366): kỳ lãi chưa chi + đáo hạn.
+  Future<CustUpcoming> upcoming({int days = 366}) => apiCall(() async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '/api/customer/upcoming',
+      queryParameters: {'days': days},
+    );
+    return CustUpcoming.fromJson(res.data!);
+  });
+
+  /// [direction]: `In` (tiền vào) | `Out` (tiền ra) | `null` (tất cả).
   Future<Paged<CustTransaction>> transactions({
+    String? direction,
     int page = 1,
     int pageSize = 20,
   }) => apiCall(() async {
     final res = await _dio.get<Map<String, dynamic>>(
       '/api/customer/transactions',
-      queryParameters: {'pageNumber': page, 'pageSize': pageSize},
+      queryParameters: cleanQuery({
+        'direction': direction,
+        'pageNumber': page,
+        'pageSize': pageSize,
+      }),
     );
     return Paged.fromJson(res.data!, CustTransaction.fromJson);
   });
@@ -99,10 +113,3 @@ class CustomerAppRepository {
     );
   });
 }
-
-/// Lỗi OTP hiển thị cho người dùng (429 = quá nhiều lần thử trên cùng địa chỉ).
-String otpErrorMessage(ApiException e) => switch (e.status) {
-  429 => 'Bạn thao tác quá nhanh. Vui lòng chờ một phút rồi thử lại.',
-  400 => e.fieldErrors.values.firstOrNull ?? e.message,
-  _ => e.message,
-};

@@ -1,16 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/providers.dart';
-import '../../../core/ui/theme.dart';
-import '../../../core/utils/labels.dart';
+import '../../../core/network/api_exception.dart';
 import 'customer_providers.dart';
+import 'customer_support.dart';
+import 'kh_theme.dart';
+import 'kh_widgets.dart';
 
-/// Đăng nhập bằng số điện thoại + mã OTP. Chỉ khách đã được ngân hàng bật quyền mới nhận được mã;
-/// màn hình **không** tiết lộ số có tài khoản hay không (máy chủ trả cùng một kết quả).
+/// K01 – Đăng nhập bằng số điện thoại hoặc mã khách hàng + mật khẩu; có phiên đã lưu và bật sinh trắc thì mở nhanh
+/// bằng vân tay / Face ID. Mật khẩu lần đầu do nhân viên cấp (xem màn đổi mật khẩu bắt buộc).
 class CustomerLoginScreen extends ConsumerStatefulWidget {
   const CustomerLoginScreen({super.key});
 
@@ -19,231 +21,255 @@ class CustomerLoginScreen extends ConsumerStatefulWidget {
 }
 
 class _State extends ConsumerState<CustomerLoginScreen> {
-  final _phone = TextEditingController();
-  final _code = TextEditingController();
+  final _id = TextEditingController();
+  final _password = TextEditingController();
   bool _busy = false;
-  bool _codeStep = false;
   String? _error;
-  int _resendIn = 0;
-  Timer? _timer;
+  bool _autoPrompted = false;
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _phone.dispose();
-    _code.dispose();
+    _id.dispose();
+    _password.dispose();
     super.dispose();
   }
 
-  void _startCountdown(int seconds) {
-    _timer?.cancel();
-    setState(() => _resendIn = seconds);
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) return t.cancel();
-      setState(() => _resendIn = _resendIn > 0 ? _resendIn - 1 : 0);
-      if (_resendIn == 0) t.cancel();
-    });
-  }
-
-  Future<void> _run(Future<void> Function() action) async {
+  Future<void> _submit() async {
+    final id = _id.text.trim();
+    if (id.isEmpty || _password.text.isEmpty) {
+      setState(
+        () => _error = 'Nhập số điện thoại hoặc mã khách hàng và mật khẩu.',
+      );
+      return;
+    }
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
-      await action();
-    } on Object catch (e) {
+      // Router tự chuyển sang màn chính (hoặc màn đổi mật khẩu bắt buộc) khi đăng nhập xong.
+      await ref
+          .read(custAuthControllerProvider.notifier)
+          .login(id, _password.text);
+    } on ApiException catch (e) {
       if (mounted) {
-        setState(() => _error = e is _Invalid ? e.message : loginErrorText(e));
+        setState(
+          () => _error = e.status == 429
+              ? 'Thử đăng nhập quá nhiều lần. Vui lòng chờ một phút.'
+              : e.message,
+        );
+      }
+    } on Object {
+      if (mounted) setState(() => _error = 'Có lỗi xảy ra. Vui lòng thử lại.');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _biometric() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final ok = await ref
+          .read(custAuthControllerProvider.notifier)
+          .unlockWithBiometric();
+      if (!ok && mounted) {
+        setState(
+          () => _error =
+              'Chưa xác thực được. Hãy thử lại hoặc đăng nhập bằng mật khẩu.',
+        );
       }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _sendCode() => _run(() async {
-    final phone = _phone.text.trim();
-    if (phone.length < 9) {
-      throw const _Invalid('Nhập số điện thoại di động đã đăng ký.');
-    }
-    final r = await ref
-        .read(custAuthControllerProvider.notifier)
-        .requestOtp(phone);
-    if (!mounted) return;
-    setState(() => _codeStep = true);
-    _startCountdown(r.resendAfterSeconds);
-  });
-
-  Future<void> _verify() => _run(() async {
-    final code = _code.text.trim();
-    if (code.length != 6) throw const _Invalid('Nhập đủ 6 chữ số của mã OTP.');
-    // Router tự chuyển sang màn chính khi đăng nhập xong.
-    await ref
-        .read(custAuthControllerProvider.notifier)
-        .verifyOtp(_phone.text.trim(), code);
-  });
+  Future<void> _forgot() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) {
+        final k = ctx.kh;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Quên mật khẩu?', style: KhType.t1.copyWith(color: k.ink)),
+                const SizedBox(height: 8),
+                Text(
+                  'Vì an toàn, mật khẩu chỉ được cấp lại trực tiếp. Vui lòng đến chi nhánh hoặc liên hệ chuyên viên của bạn. '
+                  'Nhân viên sẽ cấp mật khẩu tạm và bạn sẽ được yêu cầu đổi ngay khi đăng nhập.',
+                  style: KhType.b.copyWith(color: k.ink2),
+                ),
+                const SizedBox(height: 20),
+                const KhCallSupportButton(kind: KhButtonKind.tonal),
+                if (ref.read(custSupportPhoneProvider).isNotEmpty)
+                  const SizedBox(height: 10),
+                KhButton(label: 'Đã hiểu', onPressed: () => Navigator.pop(ctx)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final k = context.kh;
     final auth = ref.watch(custAuthControllerProvider);
     final expired = auth is AuthSignedOut && auth.expired;
-    final scheme = Theme.of(context).colorScheme;
+    final bioReady = ref.watch(custBiometricReadyProvider);
+    if (bioReady && !_autoPrompted) {
+      _autoPrompted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_biometric());
+      });
+    }
 
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+      backgroundColor: k.bg,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            KhHero(
+              shadow: false,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(36),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                28,
+                MediaQuery.paddingOf(context).top + 56,
+                28,
+                36,
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.account_balance_outlined,
-                    size: 48,
-                    color: scheme.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Chứng chỉ tiền gửi',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _codeStep
-                        ? 'Nhập mã OTP vừa gửi tới ${_phone.text.trim()}'
-                        : 'Đăng nhập bằng số điện thoại đã đăng ký với ngân hàng',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: scheme.onSurfaceVariant),
-                  ),
-                  const SizedBox(height: 32),
-                  if (expired && !_codeStep) ...[
-                    const _Notice(
-                      text:
-                          'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
-                      tone: Tone.warning,
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: const Color(0x24FFFFFF),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    const SizedBox(height: 16),
-                  ],
-                  if (!_codeStep)
-                    TextField(
-                      key: const Key('phone'),
-                      controller: _phone,
-                      enabled: !_busy,
-                      keyboardType: TextInputType.phone,
-                      autofillHints: const [AutofillHints.telephoneNumber],
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _sendCode(),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'[0-9+\s.\-]'),
-                        ),
-                        LengthLimitingTextInputFormatter(16),
-                      ],
-                      decoration: const InputDecoration(
-                        labelText: 'Số điện thoại',
-                        prefixIcon: Icon(Icons.phone_outlined),
-                      ),
-                    )
-                  else
-                    TextField(
-                      key: const Key('code'),
-                      controller: _code,
-                      enabled: !_busy,
-                      autofocus: true,
-                      keyboardType: TextInputType.number,
-                      autofillHints: const [AutofillHints.oneTimeCode],
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _verify(),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(6),
-                      ],
-                      style: const TextStyle(letterSpacing: 8, fontSize: 24),
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        labelText: 'Mã OTP (6 chữ số)',
+                    child: const Icon(
+                      LucideIcons.landmark,
+                      size: 26,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      'Tiền gửi của bạn,\nrõ ràng trong tầm tay.',
+                      style: KhType.d2.copyWith(
+                        fontSize: 30,
+                        height: 38 / 30,
+                        color: Colors.white,
                       ),
                     ),
-                  if (_error != null) ...[
-                    const SizedBox(height: 16),
-                    _Notice(text: _error!, tone: Tone.danger),
-                  ],
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: _busy ? null : (_codeStep ? _verify : _sendCode),
-                    child: _busy
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(_codeStep ? 'Đăng nhập' : 'Nhận mã OTP'),
                   ),
-                  if (_codeStep) ...[
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: (_busy || _resendIn > 0) ? null : _sendCode,
-                      child: Text(
-                        _resendIn > 0
-                            ? 'Gửi lại mã sau $_resendIn giây'
-                            : 'Gửi lại mã',
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: _busy
-                          ? null
-                          : () => setState(() {
-                              _codeStep = false;
-                              _code.clear();
-                              _error = null;
-                            }),
-                      child: const Text('Đổi số điện thoại'),
-                    ),
-                  ],
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
                   Text(
-                    'Chưa nhận được mã? Số của bạn cần được ngân hàng kích hoạt cho ứng dụng. '
-                    'Liên hệ chi nhánh để được hỗ trợ.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall
-                        ?.copyWith(color: scheme.onSurfaceVariant),
+                    'Theo dõi chứng chỉ tiền gửi, lãi và ngày đáo hạn mọi lúc.',
+                    style: KhType.b.copyWith(color: const Color(0xCCFFFFFF)),
                   ),
                 ],
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+              child: AutofillGroup(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (expired) ...[
+                      const KhNote(
+                        'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+                        icon: LucideIcons.clock,
+                        amber: true,
+                      ),
+                      const SizedBox(height: 18),
+                    ],
+                    KhField(
+                      key: const Key('identifier'),
+                      label: 'Số điện thoại hoặc mã khách hàng',
+                      controller: _id,
+                      icon: LucideIcons.user,
+                      enabled: !_busy,
+                      keyboardType: TextInputType.text,
+                      autofillHints: const [AutofillHints.username],
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 18),
+                    KhField(
+                      key: const Key('password'),
+                      label: 'Mật khẩu',
+                      controller: _password,
+                      icon: LucideIcons.lock,
+                      obscure: true,
+                      enabled: !_busy,
+                      autofillHints: const [AutofillHints.password],
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _submit(),
+                    ),
+                    if (_error != null) ...[
+                      const SizedBox(height: 14),
+                      Semantics(
+                        liveRegion: true,
+                        child: KhNote(
+                          _error!,
+                          icon: LucideIcons.circleAlert,
+                          amber: true,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    KhButton(
+                      label: 'Đăng nhập',
+                      onPressed: _busy ? null : _submit,
+                      busy: _busy,
+                    ),
+                    if (bioReady) ...[
+                      const SizedBox(height: 12),
+                      KhButton(
+                        label: 'Đăng nhập bằng vân tay / Face ID',
+                        icon: LucideIcons.fingerprintPattern,
+                        kind: KhButtonKind.outlined,
+                        height: 48,
+                        onPressed: _busy ? null : _biometric,
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Center(
+                      child: TextButton(
+                        onPressed: _forgot,
+                        child: const Text(
+                          'Quên mật khẩu?',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Cần hỗ trợ? Liên hệ chuyên viên hoặc chi nhánh của bạn.',
+                      textAlign: TextAlign.center,
+                      style: KhType.c.copyWith(color: k.ink3),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _Invalid implements Exception {
-  const _Invalid(this.message);
-  final String message;
-}
-
-class _Notice extends StatelessWidget {
-  const _Notice({required this.text, required this.tone});
-  final String text;
-  final Tone tone;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.tones;
-    return Semantics(
-      liveRegion: true,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: t.bg(tone),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(text, style: TextStyle(color: t.fg(tone))),
       ),
     );
   }

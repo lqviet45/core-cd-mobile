@@ -736,7 +736,7 @@
         }
       }
     },
-    "/api/customer/auth/otp/request": {
+    "/api/customer/auth/login": {
       "post": {
         "tags": [
           "CustomerAuth"
@@ -745,17 +745,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpRequest"
+                "$ref": "#/components/schemas/CustomerLoginRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpRequest"
+                "$ref": "#/components/schemas/CustomerLoginRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpRequest"
+                "$ref": "#/components/schemas/CustomerLoginRequest"
               }
             }
           },
@@ -768,7 +768,7 @@
         }
       }
     },
-    "/api/customer/auth/otp/verify": {
+    "/api/customer/auth/change-password": {
       "post": {
         "tags": [
           "CustomerAuth"
@@ -777,17 +777,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpVerifyRequest"
+                "$ref": "#/components/schemas/CustomerChangePasswordRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpVerifyRequest"
+                "$ref": "#/components/schemas/CustomerChangePasswordRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerOtpVerifyRequest"
+                "$ref": "#/components/schemas/CustomerChangePasswordRequest"
               }
             }
           },
@@ -997,6 +997,29 @@
         }
       }
     },
+    "/api/customer/upcoming": {
+      "get": {
+        "tags": [
+          "CustomerPortal"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/customer/transactions": {
       "get": {
         "tags": [
@@ -1013,6 +1036,14 @@
           },
           {
             "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": null
+            }
+          },
+          {
+            "name": "direction",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1371,6 +1402,29 @@
         }
       },
       "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Customers/{id}/app-access/reset-password": {
+      "post": {
         "tags": [
           "Customers"
         ],
@@ -3638,6 +3692,46 @@
           }
         }
       },
+      "CustomerChangePasswordRequest": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "CustomerLoginRequest": {
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
       "CustomerLogoutRequest": {
         "required": [
           "refreshToken"
@@ -3646,37 +3740,6 @@
         "properties": {
           "refreshToken": {
             "type": "string"
-          }
-        }
-      },
-      "CustomerOtpRequest": {
-        "required": [
-          "phone"
-        ],
-        "type": "object",
-        "properties": {
-          "phone": {
-            "type": "string"
-          }
-        }
-      },
-      "CustomerOtpVerifyRequest": {
-        "required": [
-          "phone",
-          "code"
-        ],
-        "type": "object",
-        "properties": {
-          "phone": {
-            "type": "string"
-          },
-          "code": {
-            "type": "string"
-          },
-          "deviceName": {
-            "type": "string",
-            "default": null,
-            "nullable": true
           }
         }
       },

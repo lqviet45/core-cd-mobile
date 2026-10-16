@@ -13,7 +13,7 @@ CustomerProfile _$CustomerProfileFromJson(Map<String, dynamic> json) =>
       fullName: json['fullName'] as String,
       customerType: json['customerType'] as String,
       identityNumberMasked: json['identityNumberMasked'] as String,
-      email: json['email'] as String,
+      emailMasked: json['emailMasked'] as String,
       phoneMasked: json['phoneMasked'] as String,
       address: json['address'] as String?,
     );
@@ -21,6 +21,7 @@ CustomerProfile _$CustomerProfileFromJson(Map<String, dynamic> json) =>
 CustomerSummary _$CustomerSummaryFromJson(Map<String, dynamic> json) =>
     CustomerSummary(
       holdingCount: (json['holdingCount'] as num).toInt(),
+      closedCount: (json['closedCount'] as num).toInt(),
       totalPrincipal: const DecimalConverter().fromJson(json['totalPrincipal']),
       estimatedInterestTotal: const DecimalConverter().fromJson(
         json['estimatedInterestTotal'],
@@ -133,7 +134,23 @@ CustDocument _$CustDocumentFromJson(Map<String, dynamic> json) => CustDocument(
   createdAt: const UtcDateConverter().fromJson(json['createdAt'] as String),
 );
 
-OtpRequested _$OtpRequestedFromJson(Map<String, dynamic> json) => OtpRequested(
-  expiresInSeconds: (json['expiresInSeconds'] as num).toInt(),
-  resendAfterSeconds: (json['resendAfterSeconds'] as num).toInt(),
+CustReceipt _$CustReceiptFromJson(Map<String, dynamic> json) => CustReceipt(
+  date: const UtcDateConverter().fromJson(json['date'] as String),
+  kind: json['kind'] as String,
+  certificateId: json['certificateId'] as String,
+  certificateNumber: json['certificateNumber'] as String,
+  termName: json['termName'] as String,
+  paymentMethod: json['paymentMethod'] as String,
+  amount: const DecimalConverter().fromJson(json['amount']),
+  isDue: json['isDue'] as bool,
+  periodIndex: (json['periodIndex'] as num?)?.toInt(),
+  periodTotal: (json['periodTotal'] as num?)?.toInt(),
+);
+
+CustUpcoming _$CustUpcomingFromJson(Map<String, dynamic> json) => CustUpcoming(
+  days: (json['days'] as num).toInt(),
+  totalAmount: const DecimalConverter().fromJson(json['totalAmount']),
+  items: (json['items'] as List<dynamic>)
+      .map((e) => CustReceipt.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );

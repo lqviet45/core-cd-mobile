@@ -1,0 +1,61 @@
+{
+  "items": [
+    {
+      "id": "10019355-9f70-4fc1-9af1-f259a43d7d54",
+      "certificateNumber": "CDS2609170E157D38",
+      "principal": 30000000,
+      "annualRatePercent": 4,
+      "termDays": 30,
+      "termName": "1 tháng",
+      "paymentMethod": "AtMaturity",
+      "issueDate": "2026-09-17T00:00:00Z",
+      "maturityDate": "2026-10-17T00:00:00Z",
+      "status": "Active",
+      "estimatedInterest": 98630,
+      "totalInterestPaid": 0,
+      "redemptionDate": null,
+      "netAmountAtRedemption": null,
+      "interestPayments": []
+    },
+    {
+      "id": "56118cbd-5f76-4432-b614-210d4b2db991",
+      "certificateNumber": "CDS2610149E04A685",
+      "principal": 100000000,
+      "annualRatePercent": 7.5,
+      "termDays": 300,
+      "termName": "12 tháng",
+      "paymentMethod": "AtMaturity",
+      "issueDate": "2026-10-14T00:00:00Z",
+      "maturityDate": "2027-08-10T00:00:00Z",
+      "status": "Active",
+      "estimatedInterest": 6164384,
+      "totalInterestPaid": 0,
+      "redemptionDate": null,
+      "netAmountAtRedemption": null,
+      "interestPayments": []
+    },
+    {
+      "id": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "principal": 200000000,
+      "annualRatePercent": 7.3,
+      "termDays": 300,
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "issueDate": "2026-10-14T00:00:00Z",
+      "maturityDate": "2027-08-10T00:00:00Z",
+      "status": "Active",
+      "estimatedInterest": 12000000,
+      "totalInterestPaid": 0,
+      "redemptionDate": null,
+      "netAmountAtRedemption": null,
+      "interestPayments": []
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 3,
+  "totalPages": 1,
+  "hasPreviousPage": false,
+  "hasNextPage": false
+}

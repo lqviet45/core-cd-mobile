@@ -5,17 +5,23 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/auth/providers.dart';
 import '../../../core/network/api_exception.dart';
-import '../../../core/ui/widgets.dart';
+import 'customer_account.dart';
+import 'customer_calendar.dart';
+import 'customer_certs.dart';
+import 'customer_home.dart';
 import 'customer_login_screen.dart';
+import 'customer_password_screen.dart';
 import 'customer_providers.dart';
-import 'customer_screens.dart';
+import 'customer_transactions.dart';
+import 'kh_widgets.dart';
 
-/// Điều hướng theo trạng thái đăng nhập (hàm thuần để dễ test).
+/// Điều hướng theo trạng thái đăng nhập (hàm thuần để dễ test). Còn mật khẩu tạm → chỉ được ở màn đổi mật khẩu.
 String? customerRedirectFor({
   required AuthState auth,
+  required bool mustChangePassword,
   required String location,
 }) {
-  const open = {'/login', '/splash', '/offline'};
+  const open = {'/login', '/splash', '/offline', '/change-password'};
   switch (auth) {
     case AuthRestoring():
       return location == '/splash' ? null : '/splash';
@@ -24,6 +30,9 @@ String? customerRedirectFor({
     case AuthSignedOut():
       return location == '/login' ? null : '/login';
     case AuthSignedIn():
+      if (mustChangePassword) {
+        return location == '/change-password' ? null : '/change-password';
+      }
       return open.contains(location) ? '/home' : null;
   }
 }
@@ -32,6 +41,7 @@ final customerRouterProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier<int>(0);
   ref
     ..listen(custAuthControllerProvider, (_, __) => refresh.value++)
+    ..listen(custMustChangeProvider, (_, __) => refresh.value++)
     ..onDispose(refresh.dispose);
 
   final router = GoRouter(
@@ -39,12 +49,35 @@ final customerRouterProvider = Provider<GoRouter>((ref) {
     refreshListenable: refresh,
     redirect: (context, state) => customerRedirectFor(
       auth: ref.read(custAuthControllerProvider),
+      mustChangePassword: ref.read(custMustChangeProvider),
       location: state.matchedLocation,
     ),
     routes: [
       GoRoute(path: '/splash', builder: (_, __) => const _Splash()),
       GoRoute(path: '/login', builder: (_, __) => const CustomerLoginScreen()),
       GoRoute(path: '/offline', builder: (_, __) => const _OfflineStart()),
+      GoRoute(
+        path: '/change-password',
+        builder: (_, __) => const CustomerPasswordScreen(forced: true),
+      ),
+      GoRoute(
+        path: '/password',
+        builder: (_, __) => const CustomerPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/certificate/:id',
+        builder: (_, s) =>
+            CustomerCertificateDetailScreen(id: s.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/transactions',
+        builder: (_, __) => const CustomerTransactionsScreen(),
+      ),
+      GoRoute(
+        path: '/transaction/:id',
+        builder: (_, s) =>
+            CustomerTransactionDetailScreen(id: s.pathParameters['id']!),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => _Shell(shell: shell),
         branches: [
@@ -61,30 +94,14 @@ final customerRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/certificates',
                 builder: (_, __) => const CustomerCertificatesScreen(),
-                routes: [
-                  GoRoute(
-                    path: ':id',
-                    builder: (_, s) => CustomerCertificateDetailScreen(
-                      id: s.pathParameters['id']!,
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/transactions',
-                builder: (_, __) => const CustomerTransactionsScreen(),
-                routes: [
-                  GoRoute(
-                    path: ':id',
-                    builder: (_, s) => CustomerTransactionDetailScreen(
-                      id: s.pathParameters['id']!,
-                    ),
-                  ),
-                ],
+                path: '/calendar',
+                builder: (_, __) => const CustomerCalendarScreen(),
               ),
             ],
           ),
@@ -109,23 +126,20 @@ class _Shell extends StatelessWidget {
   final StatefulNavigationShell shell;
 
   static const _items = [
-    (LucideIcons.layoutGrid, 'Tổng quan'),
-    (LucideIcons.fileText, 'CCTG'),
-    (LucideIcons.repeat, 'Giao dịch'),
-    (LucideIcons.user, 'Tài khoản'),
+    KhNavItem(LucideIcons.house, 'Trang chủ'),
+    KhNavItem(LucideIcons.fileText, 'CCTG'),
+    KhNavItem(LucideIcons.calendar, 'Lịch'),
+    KhNavItem(LucideIcons.user, 'Tài khoản'),
   ];
 
   @override
   Widget build(BuildContext context) => Scaffold(
     body: shell,
-    bottomNavigationBar: NavigationBar(
-      selectedIndex: shell.currentIndex,
-      onDestinationSelected: (i) =>
+    bottomNavigationBar: KhNavBar(
+      items: _items,
+      index: shell.currentIndex,
+      onSelected: (i) =>
           shell.goBranch(i, initialLocation: i == shell.currentIndex),
-      destinations: [
-        for (final (icon, label) in _items)
-          NavigationDestination(icon: Icon(icon), label: label),
-      ],
     ),
   );
 }
@@ -134,18 +148,14 @@ class _Splash extends StatelessWidget {
   const _Splash();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => const Scaffold(
     body: Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.account_balance_outlined,
-            size: 48,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 24),
-          const CircularProgressIndicator(),
+          Icon(LucideIcons.landmark, size: 48),
+          SizedBox(height: 24),
+          CircularProgressIndicator(),
         ],
       ),
     ),
@@ -158,7 +168,7 @@ class _OfflineStart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-    body: ErrorState(
+    body: KhError(
       error: const ApiException(
         status: 0,
         message: 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.',

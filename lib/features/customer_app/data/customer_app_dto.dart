@@ -14,7 +14,7 @@ class CustomerProfile {
     required this.fullName,
     required this.customerType,
     required this.identityNumberMasked,
-    required this.email,
+    required this.emailMasked,
     required this.phoneMasked,
     this.address,
   });
@@ -27,7 +27,7 @@ class CustomerProfile {
   final String fullName;
   final String customerType;
   final String identityNumberMasked;
-  final String email;
+  final String emailMasked;
   final String phoneMasked;
   final String? address;
 }
@@ -38,6 +38,7 @@ class CustomerProfile {
 class CustomerSummary {
   const CustomerSummary({
     required this.holdingCount,
+    required this.closedCount,
     required this.totalPrincipal,
     required this.estimatedInterestTotal,
     required this.interestReceivedTotal,
@@ -50,6 +51,7 @@ class CustomerSummary {
       _$CustomerSummaryFromJson(json);
 
   final int holdingCount;
+  final int closedCount;
   final Decimal totalPrincipal;
   final Decimal estimatedInterestTotal;
   final Decimal interestReceivedTotal;
@@ -238,16 +240,58 @@ class CustDocument {
   final DateTime createdAt;
 }
 
+/// Một khoản sẽ nhận (kỳ lãi hoặc đáo hạn).
 @JsonSerializable(createToJson: false)
-class OtpRequested {
-  const OtpRequested({
-    required this.expiresInSeconds,
-    required this.resendAfterSeconds,
+@DecimalConverter()
+@UtcDateConverter()
+class CustReceipt {
+  const CustReceipt({
+    required this.date,
+    required this.kind,
+    required this.certificateId,
+    required this.certificateNumber,
+    required this.termName,
+    required this.paymentMethod,
+    required this.amount,
+    required this.isDue,
+    this.periodIndex,
+    this.periodTotal,
   });
 
-  factory OtpRequested.fromJson(Map<String, dynamic> json) =>
-      _$OtpRequestedFromJson(json);
+  factory CustReceipt.fromJson(Map<String, dynamic> json) =>
+      _$CustReceiptFromJson(json);
 
-  final int expiresInSeconds;
-  final int resendAfterSeconds;
+  final DateTime date;
+
+  /// `Interest | Maturity`.
+  final String kind;
+  final String certificateId;
+  final String certificateNumber;
+  final String termName;
+
+  /// `AtMaturity | Monthly | Quarterly`.
+  final String paymentMethod;
+  final Decimal amount;
+  final bool isDue;
+  final int? periodIndex;
+  final int? periodTotal;
+
+  bool get isMaturity => kind == 'Maturity';
+}
+
+@JsonSerializable(createToJson: false)
+@DecimalConverter()
+class CustUpcoming {
+  const CustUpcoming({
+    required this.days,
+    required this.totalAmount,
+    required this.items,
+  });
+
+  factory CustUpcoming.fromJson(Map<String, dynamic> json) =>
+      _$CustUpcomingFromJson(json);
+
+  final int days;
+  final Decimal totalAmount;
+  final List<CustReceipt> items;
 }

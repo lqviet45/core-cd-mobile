@@ -34,5 +34,6 @@ alwaysApply: true
 
 ## App khách hàng (`lib/features/customer_app`)
 - Chỉ đọc, chỉ dữ liệu của chính khách (máy chủ lấy từ token). Không bao giờ gửi `customerId` do client chọn; không import tính năng nhân viên; không dùng `dioProvider`/`authControllerProvider` của app nhân viên (dùng `cust*Provider`).
-- Token khách ở kho khoá riêng; không cache đọc, không push (chưa làm). Link tài liệu là bí mật ngắn hạn: không log/lưu.
+- Giao diện khách theo thiết kế K01–K09: dùng token/thành phần ở `kh_theme.dart`/`kh_widgets.dart` (không dùng `core/ui/theme.dart` của app nhân viên); sáng/tối theo hệ thống; Be Vietnam Pro.
+- Token khách ở kho khoá riêng; không cache đọc, không push (chưa làm). Còn mật khẩu tạm (`mustChangePassword`) thì chỉ được ở màn đổi mật khẩu. Link tài liệu là bí mật ngắn hạn: không log/lưu.
 - Đổi API `/api/customer/*` → làm ở backend, `tool/sync_api.sh`, làm mới fixture bằng `tool/capture_customer_fixtures.mjs`.

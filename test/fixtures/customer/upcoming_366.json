@@ -1,0 +1,162 @@
+{
+  "days": 366,
+  "totalAmount": 348263014,
+  "items": [
+    {
+      "date": "2026-10-17T00:00:00Z",
+      "kind": "Maturity",
+      "certificateId": "10019355-9f70-4fc1-9af1-f259a43d7d54",
+      "certificateNumber": "CDS2609170E157D38",
+      "termName": "1 tháng",
+      "paymentMethod": "AtMaturity",
+      "amount": 30098630,
+      "periodIndex": null,
+      "periodTotal": null,
+      "isDue": false
+    },
+    {
+      "date": "2026-11-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1240000,
+      "periodIndex": 1,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2026-12-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1200000,
+      "periodIndex": 2,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-01-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1240000,
+      "periodIndex": 3,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-02-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1240000,
+      "periodIndex": 4,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-03-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1120000,
+      "periodIndex": 5,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-04-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1240000,
+      "periodIndex": 6,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-05-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1200000,
+      "periodIndex": 7,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-06-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1240000,
+      "periodIndex": 8,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-07-14T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1200000,
+      "periodIndex": 9,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-08-10T00:00:00Z",
+      "kind": "Interest",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 1080000,
+      "periodIndex": 10,
+      "periodTotal": 10,
+      "isDue": false
+    },
+    {
+      "date": "2027-08-10T00:00:00Z",
+      "kind": "Maturity",
+      "certificateId": "56118cbd-5f76-4432-b614-210d4b2db991",
+      "certificateNumber": "CDS2610149E04A685",
+      "termName": "12 tháng",
+      "paymentMethod": "AtMaturity",
+      "amount": 106164384,
+      "periodIndex": null,
+      "periodTotal": null,
+      "isDue": false
+    },
+    {
+      "date": "2027-08-10T00:00:00Z",
+      "kind": "Maturity",
+      "certificateId": "95da5ac5-bddf-4ada-b67b-7615e2e45e8e",
+      "certificateNumber": "CDS261014FD74EA22",
+      "termName": "12 tháng - Trả hàng tháng",
+      "paymentMethod": "Monthly",
+      "amount": 200000000,
+      "periodIndex": null,
+      "periodTotal": null,
+      "isDue": false
+    }
+  ]
+}

@@ -13,33 +13,34 @@ import 'package:core_cd_mobile/features/customer_app/data/customer_auth_api.dart
 import 'package:dio/dio.dart' show Options;
 import 'package:flutter_test/flutter_test.dart';
 
-/// Kiểm tra app khách hàng với backend THẬT (đăng nhập OTP → đọc dữ liệu → refresh → đăng xuất).
-/// Không chạy mặc định. Cần backend dev với `Otp:Provider=Log`, khách đã được bật quyền app (xem
-/// `tool/capture_customer_fixtures.mjs`) và mã OTP mới đọc từ log API:
-///   CD_LIVE_API=http://localhost:5080 CD_LIVE_PHONE=0901234567 CD_LIVE_OTP=123456 \
+/// Kiểm tra app khách hàng với backend THẬT: đăng nhập SĐT/CIF + mật khẩu → đọc dữ liệu → refresh xoay vòng → đăng xuất.
+/// Không chạy mặc định. Cần backend dev đã có khách được bật quyền app và đã đổi mật khẩu tạm
+/// (xem `tool/capture_customer_fixtures.mjs`, mật khẩu mặc định `Matkhau#Demo2026`):
+///   CD_LIVE_API=http://localhost:5080 CD_LIVE_ID=0901234567 CD_LIVE_PASSWORD='Matkhau#Demo2026' \
 ///     flutter test test/live --tags live
 void main() {
   final api = Platform.environment['CD_LIVE_API'];
-  final phone = Platform.environment['CD_LIVE_PHONE'];
-  final otp = Platform.environment['CD_LIVE_OTP'];
-  final skip = (api == null || phone == null || otp == null)
-      ? 'Đặt CD_LIVE_API, CD_LIVE_PHONE, CD_LIVE_OTP để chạy.'
+  final id = Platform.environment['CD_LIVE_ID'];
+  final password = Platform.environment['CD_LIVE_PASSWORD'];
+  final skip = (api == null || id == null || password == null)
+      ? 'Đặt CD_LIVE_API, CD_LIVE_ID, CD_LIVE_PASSWORD để chạy.'
       : null;
 
-  test('OTP → đọc dữ liệu → refresh xoay vòng → đăng xuất', () async {
+  test('đăng nhập → đọc dữ liệu → refresh xoay vòng → đăng xuất', () async {
     final config = AppConfig(apiBaseUrl: api!, envName: 'dev');
     final authApi = CustomerAuthApi(createBareDio(config), deviceName: 'live');
     final store = InMemoryTokenStore();
     final session = SessionManager(store: store, api: authApi);
     addTearDown(session.dispose);
 
-    // OTP sai bị từ chối nhưng không huỷ mã đúng (chỉ tính một lần sai).
+    // Sai mật khẩu bị từ chối bằng 401 (không phân biệt tài khoản có tồn tại hay không).
     await expectLater(
-      authApi.verifyOtp(phone!, otp! == '000000' ? '000001' : '000000'),
+      authApi.login(id!, '${password!}-sai'),
       throwsA(isA<ApiException>().having((e) => e.status, 'status', 401)),
     );
 
-    await session.signIn(await authApi.verifyOtp(phone, otp));
+    await session.login(id, password);
+    expect(authApi.mustChangePassword, isFalse, reason: 'đã đổi mật khẩu tạm');
     final first = await store.readRefreshToken();
     expect(first, isNotNull);
 
@@ -49,21 +50,35 @@ void main() {
     final me = await repo.me();
     expect(me.phoneMasked, contains('•'));
     expect(me.identityNumberMasked, contains('•'));
+    expect(me.emailMasked, contains('•'));
 
     final summary = await repo.summary();
-    final certs = await repo.certificates(scope: 'Holding');
-    expect(certs.totalCount, summary.holdingCount);
-    for (final c in certs.items) {
+    final holding = await repo.certificates(scope: 'Holding');
+    expect(holding.totalCount, summary.holdingCount);
+    final closed = await repo.certificates(scope: 'Closed');
+    expect(closed.totalCount, summary.closedCount);
+    for (final c in holding.items) {
       expect((await repo.certificate(c.id)).id, c.id);
-      final sched = await repo.interestSchedule(c.id);
-      expect(sched.certificateId, c.id);
+      expect((await repo.interestSchedule(c.id)).certificateId, c.id);
       expect(await repo.documents('certificates', c.id), isA<List<dynamic>>());
     }
-    final trx = await repo.transactions();
-    if (trx.items.isNotEmpty) {
+
+    final upcoming = await repo.upcoming();
+    expect(
+      upcoming.items.length,
+      greaterThanOrEqualTo(holding.items.isNotEmpty ? 1 : 0),
+    );
+    final dates = upcoming.items.map((i) => i.date).toList();
+    expect(dates, orderedEquals([...dates]..sort()));
+
+    final out = await repo.transactions(direction: 'Out');
+    final inn = await repo.transactions(direction: 'In');
+    final all = await repo.transactions();
+    expect(out.totalCount + inn.totalCount, all.totalCount);
+    if (all.items.isNotEmpty) {
       expect(
-        (await repo.transaction(trx.items.first.id)).trxNo,
-        trx.items.first.trxNo,
+        (await repo.transaction(all.items.first.id)).trxNo,
+        all.items.first.trxNo,
       );
     }
 

@@ -86,7 +86,7 @@ class SessionManager {
   Future<AuthUser> login(String username, String password) =>
       _api.login(username.trim(), password).then(signIn);
 
-  /// Nhận một cặp token đã có (vd. sau khi xác thực OTP ở app khách hàng) làm phiên hiện tại.
+  /// Nhận một cặp token đã có (vd. phiên mới sau khi khách đổi mật khẩu) làm phiên hiện tại.
   Future<AuthUser> signIn(AuthTokens tokens) async {
     await _adopt(tokens);
     _events.add(SignedIn(tokens.user));

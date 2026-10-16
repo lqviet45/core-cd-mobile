@@ -1,5 +1,7 @@
 {
   "API_BASE_URL": "https://api.example.invalid",
   "SENTRY_DSN": "",
-  "ENV_NAME": "prod"
+  "ENV_NAME": "prod",
+  "SUPPORT_PHONE": "",
+  "APP_VERSION": ""
 }
