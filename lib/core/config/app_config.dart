@@ -9,6 +9,10 @@ class AppConfig {
     this.requestTimeout = const Duration(seconds: 20),
   });
 
+  // Đừng để `dart fix` xoá 3 dòng dưới: giá trị mặc định '' trùng default của tham số nhưng
+  // `String.fromEnvironment` mới là thứ đọc `--dart-define` (đã từng mất vì lint này).
+  // ignore_for_file: avoid_redundant_argument_values
+
   /// Đọc từ `--dart-define`. Địa chỉ mặc định `10.0.2.2` là máy chủ của host khi chạy trên emulator Android.
   factory AppConfig.fromEnvironment() => const AppConfig(
     apiBaseUrl: String.fromEnvironment(
@@ -16,6 +20,9 @@ class AppConfig {
       defaultValue: 'http://10.0.2.2:5080',
     ),
     envName: String.fromEnvironment('ENV_NAME', defaultValue: 'dev'),
+    supportPhone: String.fromEnvironment('SUPPORT_PHONE'),
+    sentryDsn: String.fromEnvironment('SENTRY_DSN'),
+    appVersion: String.fromEnvironment('APP_VERSION'),
   );
 
   final String apiBaseUrl;

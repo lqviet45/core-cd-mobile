@@ -80,9 +80,12 @@ Cấu hình flavor đã được tạo bằng `tool/setup_ios_flavors.rb`: cấu
 3. Build: `flutter build ipa --release --flavor customer -t lib/main_customer.dart --dart-define-from-file=env/prod.json --build-name=1.0.0 --build-number=1`, rồi tải lên bằng Transporter/Xcode Organizer.
 4. Face ID: `NSFaceIDUsageDescription` đã có trong `Info.plist`; thử trên máy thật.
 
+Yêu cầu tối thiểu Android 8.0 (API 26, do `sentry_flutter` 10); đã `assembleCustomerDebug/Release` và `assembleStaffDebug` thành công trong môi trường dựng (APK khách ký bằng khoá thử: `apksigner verify` đạt, `aapt` xác nhận id `vn.corecd.customer`, nhãn `CCTG`, quyền INTERNET/USE_BIOMETRIC).
+
 ## 5. Kiểm tra trước khi phát hành
 
 - `tool/check.sh` (analyze + test) phải sạch.
+- Bản web chạy với backend thật: `tool/verify/customer_web_e2e.mjs` (hướng dẫn ở đầu file) — đăng nhập sai/đúng, các tab, chi tiết CCTG, lịch, giao dịch, hotline.
 - Với bản `staging`/`prod`: đăng nhập bằng khách thật/thử → đổi mật khẩu lần đầu → xem Trang chủ, CCTG, Lịch, Giao dịch → bật sinh trắc → khoá/mở lại → đăng xuất.
 - Thử gọi hotline (`SUPPORT_PHONE`) trên máy có SIM; mở hợp đồng PDF; xoay/dark mode; bàn phím không che ô nhập.
 - Cố ý gây một lỗi thử khi có `SENTRY_DSN` và xác nhận sự kiện lên Sentry **không** chứa thông tin khách.
