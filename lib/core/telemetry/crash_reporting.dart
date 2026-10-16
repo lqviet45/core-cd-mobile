@@ -28,7 +28,6 @@ Future<void> runWithCrashReporting(
           : '$appName@${config.appVersion}'
       ..sendDefaultPii = false
       ..attachScreenshot = false
-      // ignore: experimental_member_use
       ..attachViewHierarchy = false
       ..tracesSampleRate = 0
       ..maxRequestBodySize = MaxRequestBodySize.never
@@ -73,7 +72,16 @@ SentryEvent scrubEvent(SentryEvent e) => SentryEvent(
   threads: e.threads,
   throwable: e.throwable,
   exceptions: e.exceptions
-      ?.map((x) => x.copyWith(value: scrubString(x.value ?? '')))
+      ?.map(
+        (x) => SentryException(
+          type: x.type,
+          value: scrubString(x.value ?? ''),
+          module: x.module,
+          stackTrace: x.stackTrace,
+          mechanism: x.mechanism,
+          threadId: x.threadId,
+        ),
+      )
       .toList(),
   message: e.message == null
       ? null
